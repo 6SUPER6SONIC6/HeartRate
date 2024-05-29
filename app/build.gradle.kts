@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.hilt)
 }
 
 android {
@@ -18,6 +21,10 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+    }
+
+    ksp{
+        arg("room.schemaLocation", "$projectDir/schemas")
     }
 
     buildTypes {
@@ -47,6 +54,10 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
@@ -66,4 +77,31 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    //Lifecycle
+    implementation(libs.androidx.lifecycle.runtimeCompose)
+    implementation(libs.androidx.lifecycle.viewModelCompose)
+
+    //Hilt
+    implementation(libs.hilt.android.core)
+    implementation(libs.androidx.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
+
+    //Navigation
+    implementation(libs.androidx.navigation.compose)
+
+    //CameraX
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.view)
+
+    //Permission
+    implementation(libs.accompanist.permissions)
+
+
 }

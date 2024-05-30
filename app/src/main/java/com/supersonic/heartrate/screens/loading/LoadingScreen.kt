@@ -56,7 +56,7 @@ fun LoadingScreenContent(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(4F),
+                .weight(5F),
         ) {
             Image(
                 modifier = Modifier.fillMaxSize(),

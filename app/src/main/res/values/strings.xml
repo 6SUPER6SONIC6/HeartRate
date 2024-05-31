@@ -11,4 +11,11 @@
     <string name="onboardingPage3_body">Не відставайте від графіка контролю артеріального тиску та прийому ліків за допомогою спеціальних нагадувань.</string>
     <string name="onboardingPage_button1">Почати!</string>
     <string name="onboardingPage_button2">Продовжити</string>
+    <string name="homePage_title1">Виконайте своє перше вимірювання!</string>
+    <string name="topAppBar_title_history">Історія</string>
+    <string name="measurement_fingerNotDetected_text1">Палець не виявлено</string>
+    <string name="measurement_fingerNotDetected_text2">Щільно прикладіть палець до камери</string>
+    <string name="measurement_fingerDetected_text1">Йде Вимірювання.</string>
+    <string name="measurement_fingerDetected_text2">Визначаємо ваш пульс. Утримуйте!</string>
+    <string name="bpm">bpm</string>
 </resources>

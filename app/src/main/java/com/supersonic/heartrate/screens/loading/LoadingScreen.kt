@@ -9,18 +9,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.supersonic.heartrate.R
+import com.supersonic.heartrate.components.AnimatedLinearProgressIndicator
+import com.supersonic.heartrate.components.BackgroundedSurface
 import com.supersonic.heartrate.navigation.NavigationDestination
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
 
@@ -53,17 +53,11 @@ fun LoadingScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Surface(
+        BackgroundedSurface(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(5F),
         ) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = R.drawable.background),
-                contentScale = ContentScale.FillBounds,
-                contentDescription = null
-            )
             Column(
                 modifier = Modifier,
                 verticalArrangement = Arrangement.Center,

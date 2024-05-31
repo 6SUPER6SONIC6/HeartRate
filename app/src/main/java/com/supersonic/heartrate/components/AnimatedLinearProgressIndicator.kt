@@ -1,4 +1,4 @@
-package com.supersonic.heartrate.screens.loading
+package com.supersonic.heartrate.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateFloatAsState

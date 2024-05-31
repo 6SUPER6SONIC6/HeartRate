@@ -1,7 +1,6 @@
 package com.supersonic.heartrate.db
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -11,14 +10,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface HeartRateDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertHeartRate(heartRate: HeartRate)
+    suspend fun insertHeartRate(heartRate: HeartRate): Long
 
     @Query("SELECT * from heart_rates WHERE id = :id")
-    suspend fun getHearRate(id: Int): Flow<HeartRate>
+    fun getHearRate(id: Int): Flow<HeartRate>
 
     @Query("SELECT * from heart_rates")
-    suspend fun getAllHeartRates(): Flow<List<HeartRate>>
+    fun getAllHeartRates(): Flow<List<HeartRate>>
 
-    @Delete
+    @Query("DELETE from heart_rates")
     suspend fun deleteAllHeartRates()
 }

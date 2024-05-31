@@ -35,15 +35,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.supersonic.heartrate.R
+import com.supersonic.heartrate.models.OnboardingPage
 import com.supersonic.heartrate.navigation.NavigationDestination
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
+import com.supersonic.heartrate.util.onboarding.OnboardingPages
 import kotlinx.coroutines.launch
 
 object OnboardingScreenDestination : NavigationDestination {
@@ -57,8 +57,11 @@ fun OnboardingScreen(
     Scaffold(
         modifier = modifier
     ) {
-        OnboardingScreenContent(modifier = Modifier
-            .padding(it)
+        OnboardingScreenContent(
+            modifier = Modifier
+            .padding(it),
+            onboardPagesList = OnboardingPages.pagesList,
+            onNavigationToHomepage = onNavigationToHomepage
         )
     }
 }
@@ -66,7 +69,9 @@ fun OnboardingScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreenContent(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onboardPagesList: List<OnboardingPage> = listOf(),
+    onNavigationToHomepage: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     
@@ -103,10 +108,12 @@ fun OnboardingScreenContent(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
 
+
                 ) {
                     Image(
                         painter = painterResource(currentOnboardingPage.imageRes),
-                        modifier = Modifier.size(256.dp),
+                        modifier = Modifier
+                            .size(256.dp),
                         contentDescription = null,
                     )
                     Column(
@@ -116,19 +123,13 @@ fun OnboardingScreenContent(
                     ){
                         Text(
                             text = stringResource(currentOnboardingPage.titleRes),
-                            style = typography.titleLarge.copy(
-                                fontWeight = FontWeight(600),
-                                fontSize = 24.sp
-                            ),
+                            style = typography.titleMedium,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
                         Text(
                             text = stringResource(id = currentOnboardingPage.bodyRes),
                             textAlign = TextAlign.Center,
-                            style = typography.bodyMedium.copy(
-                                fontWeight = FontWeight(400),
-                                fontSize = 16.sp
-                            ),
+                            style = typography.bodyMedium,
                             modifier = Modifier
                         )
                     }
@@ -145,9 +146,6 @@ fun OnboardingScreenContent(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
-
-
             Row(
                 modifier = Modifier
                     .height(32.dp),
@@ -157,7 +155,7 @@ fun OnboardingScreenContent(
                     val width: Dp by animateDpAsState(
                         targetValue = if (pagerState.currentPage == it) 44.dp else 14.dp,
                         animationSpec = tween(
-                            durationMillis = 300,
+                            durationMillis = 200,
                             easing = EaseInCubic
                         ),
                         label = "OnboardingPages"
@@ -196,14 +194,24 @@ fun OnboardingScreenContent(
             Button(
                 onClick = {
                 scope.launch{
-                    pagerState.animateScrollToPage(pagerState.currentPage + 1) 
+                    pagerState.animateScrollToPage(pagerState.currentPage + 1)
                 }
+                    if (pagerState.currentPage == onboardPagesList.lastIndex){
+                        onNavigationToHomepage.invoke()
+                    }
             },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                Text(text = "Next")
+                Text(
+                    text =
+                if (pagerState.currentPage == 0 || pagerState.currentPage == onboardPagesList.lastIndex)
+                    stringResource(id = R.string.onboardingPage_button1)
+                    else
+                    stringResource(R.string.onboardingPage_button2),
+                    style = typography.labelMedium
+                )
             }
         }
     }
@@ -214,32 +222,11 @@ fun OnboardingScreenContent(
 private fun OnboardingScreenContentPreview() {
     HeartRateTheme {
         Scaffold {
-            OnboardingScreenContent(modifier = Modifier.padding(it))
+            OnboardingScreenContent(
+                modifier = Modifier.padding(it),
+                onNavigationToHomepage = {},
+                onboardPagesList = OnboardingPages.pagesList
+                )
         }
     }
 }
-
-
-val onboardPagesList = listOf(
-    OnboardingPage(
-        imageRes = R.drawable.onboarding1,
-        titleRes = R.string.onboardingPage1_title,
-        bodyRes = R.string.onboardingPage1_body
-    ),
-    OnboardingPage(
-        imageRes = R.drawable.onboarding2,
-        titleRes = R.string.onboardingPage2_title,
-        bodyRes = R.string.onboardingPage2_body
-    ),
-    OnboardingPage(
-        imageRes = R.drawable.onboarding3,
-        titleRes = R.string.onboardingPage3_title,
-        bodyRes = R.string.onboardingPage3_body
-    ),
-)
-
-data class OnboardingPage(
-        val imageRes: Int,
-        val titleRes: Int,
-        val bodyRes: Int
-    )

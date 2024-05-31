@@ -9,4 +9,6 @@
 
     <string name="onboardingPage3_title">Нагадування</string>
     <string name="onboardingPage3_body">Не відставайте від графіка контролю артеріального тиску та прийому ліків за допомогою спеціальних нагадувань.</string>
+    <string name="onboardingPage_button1">Почати!</string>
+    <string name="onboardingPage_button2">Продовжити</string>
 </resources>

@@ -78,6 +78,11 @@ fun RootAppNavigation(
             val viewModel = hiltViewModel<ResultScreenViewModel>()
             ResultScreen(
                 viewModel = viewModel,
+                onNavigateToHomepage = {
+                    navController.navigate(HomepageScreenDestination.route){
+                        popUpTo(0)
+                    }
+                },
                 onNavigationToHistory = {
                     navController.navigate(ResultHistoryScreenDestination.route)
                 }

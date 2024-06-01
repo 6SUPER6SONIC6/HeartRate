@@ -194,6 +194,7 @@ private fun OnboardingScreenContent(
             },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .height(62.dp)
                     .padding(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Text(

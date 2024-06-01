@@ -1,13 +1,20 @@
 package com.supersonic.heartrate.screens.homepage
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.supersonic.heartrate.db.HeartRateRepository
 import com.supersonic.heartrate.models.HeartRate
-import com.supersonic.heartrate.util.getCurrentDate
-import com.supersonic.heartrate.util.getCurrentTime
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -15,13 +22,22 @@ class HomepageViewModel @Inject constructor(
     private val heartRateRepository: HeartRateRepository
 ) : ViewModel(){
 
+
+
     private val _homepageUiState = MutableStateFlow<HomePageUiState>(HomePageUiState.Home)
     val homePageUiState = _homepageUiState.asStateFlow()
 
-    private val _insertedHeartRateId = MutableStateFlow(0)
-    val insertedHeartRateId = _insertedHeartRateId.asStateFlow()
-//    var insertedHeartRateId by mutableIntStateOf(0)
-//        private set
+    val heartRatesList: StateFlow<List<HeartRate>> =
+        heartRateRepository.getAllHeartRatesStream()
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5_000),
+                initialValue = emptyList()
+            )
+
+    var insertedHeartRateId by mutableIntStateOf(0)
+        private set
+
     fun openMeasurementScreen(){
         _homepageUiState.value = HomePageUiState.Measurement
     }
@@ -31,23 +47,33 @@ class HomepageViewModel @Inject constructor(
     }
 
     suspend fun onMeasurementFinish(bpm: Int){
+        val currentDateTime: LocalDateTime = LocalDateTime.now()
+
+        val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+        val currentTime: String = currentDateTime.format(timeFormatter)
+
+        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+        val currentDate: String = currentDateTime.format(dateFormatter)
+
        val id = saveHeartRate(
             HeartRate(
                 bpm = bpm,
-                time = getCurrentTime(),
-                date = getCurrentDate()
+                time = currentTime,
+                date = currentDate
             )
         )
-        _insertedHeartRateId.value = id
+        insertedHeartRateId = id
     }
 
     private suspend fun saveHeartRate(heartRate: HeartRate): Int {
          val id = heartRateRepository.insertHeartRate(heartRate).toInt()
         return id
     }
+
 }
 
 sealed class HomePageUiState {
     data object Home: HomePageUiState()
     data object Measurement: HomePageUiState()
 }
+

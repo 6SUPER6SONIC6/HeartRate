@@ -1,5 +1,6 @@
 package com.supersonic.heartrate.screens.homepage
 
+import android.Manifest
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -40,6 +41,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.components.AnimatedLinearProgressIndicator
 import com.supersonic.heartrate.components.BackgroundedSurface
@@ -52,6 +55,7 @@ object HomepageScreenDestination : NavigationDestination {
     override val route = "homepage"
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun HomepageScreen(
     modifier: Modifier = Modifier,
@@ -59,10 +63,11 @@ fun HomepageScreen(
     onNavigateToResultHistory: () -> Unit,
     onNavigationToResult: (Int) -> Unit
 ) {
-
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     val homePageUiState by viewModel.homePageUiState.collectAsState()
+    val heartRatesList by viewModel.heartRatesList.collectAsState()
     val scope = rememberCoroutineScope()
-    val id by viewModel.insertedHeartRateId.collectAsState()
+    val id = viewModel.insertedHeartRateId
 
     when(homePageUiState){
         HomePageUiState.Home -> {
@@ -71,29 +76,37 @@ fun HomepageScreen(
                     HomePageTopBar(onNavigateToResultHistory = onNavigateToResultHistory)
                 }
             ){
-                HomepageScreenContent(
-                    modifier = modifier
-                        .padding(it)
-                        .fillMaxSize(),
-                    onMeasurementButtonClick = { viewModel.openMeasurementScreen() }
-                )
+//                AnimatedVisibility(visible = homePageUiState == HomePageUiState.Home){
+                    HomepageScreenContent(
+                        modifier = modifier
+                            .padding(it)
+                            .fillMaxSize(),
+                        isFirstMeasurement = heartRatesList.isEmpty(),
+                        onMeasurementButtonClick = {
+                            if (cameraPermissionState.hasPermission) viewModel.openMeasurementScreen()
+                            else cameraPermissionState.launchPermissionRequest()
+                        }
+                    )
+//                }
             }
         }
         HomePageUiState.Measurement -> {
-            MeasurementContent(
-                modifier = modifier.fillMaxSize(),
-                onCancelMeasurement = { viewModel.openHomeScreen() },
-                onMeasurementFinish = {
-                    scope.launch {
-                        viewModel.onMeasurementFinish(it)
+//            AnimatedVisibility(visible = homePageUiState == HomePageUiState.Measurement) {
+                MeasurementContent(
+                    modifier = modifier.fillMaxSize(),
+                    onCancelMeasurement = { viewModel.openHomeScreen() },
+                    onMeasurementFinish = {
+                        scope.launch {
+                            viewModel.onMeasurementFinish(it)
+                        }
                     }
-//                    onNavigationToResult(id)
-                }
-            )
+                )
+//            }
+
         }
     }
 
-LaunchedEffect(id) {
+    LaunchedEffect(id) {
     Log.d("insertedHeartRateId", "insertedHeartRateId: $id")
     if(id > 0){
         onNavigationToResult(id)
@@ -129,6 +142,7 @@ private fun HomePageTopBar(
 @Composable
 private fun HomepageScreenContent(
     modifier: Modifier = Modifier,
+    isFirstMeasurement: Boolean = true,
     onMeasurementButtonClick: () -> Unit
 ) {
     Column(
@@ -144,12 +158,14 @@ private fun HomepageScreenContent(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text(
-                    text = stringResource(R.string.homePage_title1),
-                    style = typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 32.dp)
-                )
+                if (isFirstMeasurement){
+                    Text(
+                        text = stringResource(R.string.homePage_title1),
+                        style = typography.titleLarge,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(top = 32.dp)
+                    )
+                }
                 Spacer(modifier = Modifier.height(128.dp))
                 Image(
                     painter = painterResource(R.drawable.heart),

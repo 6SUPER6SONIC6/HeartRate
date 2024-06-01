@@ -1,5 +1,6 @@
 package com.supersonic.heartrate.screens.result
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -42,6 +43,10 @@ fun ResultScreen(
     onNavigationToHistory: () -> Unit
 ) {
     val heartRate = viewModel.heartRate
+
+    BackHandler {
+        onNavigateToHomepage.invoke()
+    }
 
     Scaffold(
         topBar = {
@@ -106,7 +111,7 @@ private fun ResultScreenContent(
                 contentAlignment = Alignment.Center
             ){
                 ResultCard(
-                    modifier = Modifier.padding(12.dp),
+                    modifier = Modifier.padding(16.dp),
                     heartRate = heartRate
                 )
             }

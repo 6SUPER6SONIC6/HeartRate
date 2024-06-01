@@ -1,5 +1,6 @@
 package com.supersonic.heartrate.screens.resultHistory
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.components.BackgroundedSurface
@@ -41,6 +43,10 @@ fun ResultHistoryScreen(
 ) {
     val heartRatesList by viewModel.heartRatesList.collectAsState()
     val scope = rememberCoroutineScope()
+
+    BackHandler {
+        onBackClick.invoke()
+    }
 
     Scaffold(
         topBar = {
@@ -82,7 +88,8 @@ private fun ResultHistoryScreenContent(
     onClearHistoryClick: () -> Unit
 ) {
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
 
         Column(
@@ -102,33 +109,42 @@ private fun ResultHistoryScreenContent(
             )
         }
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 40.dp),
-        ) {
-            items(heartRatesList, key = { it.id }) { heartRate ->
-                HistoryCard(
-                    heartRate = heartRate,
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
-
-            item {
-                Button(
-                    onClick = onClearHistoryClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(62.dp)
-                        .padding(horizontal = 16.dp, vertical = 8.dp),
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.historyPage_button1),
-                        modifier = Modifier,
-                        style = MaterialTheme.typography.labelMedium
+        if (heartRatesList.isNotEmpty()){
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 40.dp),
+            ) {
+                items(heartRatesList, key = { it.id }) { heartRate ->
+                    HistoryCard(
+                        heartRate = heartRate,
+                        modifier = Modifier.padding(8.dp)
                     )
                 }
+
+                item {
+                    Button(
+                        onClick = onClearHistoryClick,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(62.dp)
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.historyPage_button1),
+                            modifier = Modifier,
+                            style = MaterialTheme.typography.labelMedium
+                        )
+                    }
+                }
             }
+        } else {
+            Text(
+                text = stringResource(R.string.history_empty_text),
+                style = MaterialTheme.typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(top = 32.dp)
+            )
         }
     }
 }

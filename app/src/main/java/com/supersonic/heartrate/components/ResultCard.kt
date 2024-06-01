@@ -55,7 +55,7 @@ fun ResultCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp)
+                .padding(16.dp)
         ) {
             Row(
                 modifier = Modifier
@@ -304,7 +304,8 @@ fun ResultCard(
 private fun ResultCardPreview() {
     HeartRateTheme {
         ResultCard(
-            heartRate =  HeartRate(0,100, "12:54", "19/06/2024")
+            heartRate =  HeartRate(0,50, "12:54", "19/06/2024"),
+            modifier = Modifier.padding(30.dp)
         )
     }
 }

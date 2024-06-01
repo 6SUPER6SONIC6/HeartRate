@@ -38,6 +38,7 @@
     <string name="resultCard_delayed_value"> &lt;60 BPM</string>
     <string name="resultCard_standard_value">60–100 BPM</string>
     <string name="resultCard_frequent_value">>100 BPM</string>
+    <string name="history_empty_text">Ви не зробили жодного вимірювання</string>
 
 
 </resources>

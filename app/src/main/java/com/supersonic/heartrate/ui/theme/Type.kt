@@ -60,6 +60,12 @@ val Typography = Typography(
     displayMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight(400),
+        fontSize = 36.sp,
+        lineHeight = 42.sp,
+    ),
+    displaySmall = TextStyle(
+        fontFamily = FontFamily.Default,
+        fontWeight = FontWeight(400),
         fontSize = 22.sp,
         lineHeight = 22.sp,
     )

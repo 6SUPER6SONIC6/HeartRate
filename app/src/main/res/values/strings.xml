@@ -13,7 +13,9 @@
     <string name="onboardingPage_button1">Почати!</string>
     <string name="onboardingPage_button2">Продовжити</string>
 
-    <string name="resultPage_button2">Готово</string>
+    <string name="resultPage_button1">Готово</string>
+
+    <string name="historyPage_button1">Очистити історію</string>
 
     <string name="homePage_title1">Виконайте своє перше вимірювання!</string>
 
@@ -36,5 +38,6 @@
     <string name="resultCard_delayed_value"> &lt;60 BPM</string>
     <string name="resultCard_standard_value">60–100 BPM</string>
     <string name="resultCard_frequent_value">>100 BPM</string>
+
 
 </resources>

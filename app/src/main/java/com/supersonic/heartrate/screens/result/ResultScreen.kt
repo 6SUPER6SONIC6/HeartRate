@@ -125,7 +125,7 @@ private fun ResultScreenContent(
                     .padding(horizontal = 16.dp, vertical = 8.dp),
             ) {
                 Text(
-                    text = stringResource(id = R.string.resultPage_button2),
+                    text = stringResource(id = R.string.resultPage_button1),
                     modifier = Modifier,
                     style = typography.labelMedium
                 )

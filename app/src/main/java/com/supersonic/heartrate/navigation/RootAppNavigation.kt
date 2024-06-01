@@ -21,6 +21,7 @@ import com.supersonic.heartrate.screens.result.ResultScreenDestination
 import com.supersonic.heartrate.screens.result.ResultScreenViewModel
 import com.supersonic.heartrate.screens.resultHistory.ResultHistoryScreen
 import com.supersonic.heartrate.screens.resultHistory.ResultHistoryScreenDestination
+import com.supersonic.heartrate.screens.resultHistory.ResultHistoryViewModel
 
 @Composable
 fun RootAppNavigation(
@@ -91,7 +92,15 @@ fun RootAppNavigation(
 
         //Result History Screen
         composable(route = ResultHistoryScreenDestination.route) {
-            ResultHistoryScreen()
+            val viewModel = hiltViewModel<ResultHistoryViewModel>()
+            ResultHistoryScreen(
+                viewModel = viewModel,
+                onBackClick = {
+                    navController.navigate(HomepageScreenDestination.route){
+                        popUpTo(0)
+                    }
+                }
+            )
         }
 
     }

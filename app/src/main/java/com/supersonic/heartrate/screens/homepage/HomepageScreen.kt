@@ -284,7 +284,7 @@ fun MeasurementContent(
                         )
                         Text(
                             text = stringResource(R.string.bpm),
-                            style = typography.displayMedium,
+                            style = typography.displaySmall,
                             color = colorScheme.onPrimary,
                             textAlign = TextAlign.Center
                         )

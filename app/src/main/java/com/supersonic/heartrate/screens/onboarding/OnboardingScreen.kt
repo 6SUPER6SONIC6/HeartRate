@@ -38,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.supersonic.heartrate.R
-import com.supersonic.heartrate.components.BackgroundedSurface
 import com.supersonic.heartrate.models.OnboardingPage
 import com.supersonic.heartrate.navigation.NavigationDestination
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
@@ -86,49 +85,44 @@ private fun OnboardingScreenContent(
         verticalArrangement = Arrangement.Center
     ){
 
-        BackgroundedSurface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(5F),
-            ){
-            HorizontalPager(
-                state = pagerState,
-            ) { page ->
-                val currentOnboardingPage = onboardPagesList[page]
+        HorizontalPager(
+            modifier = Modifier.weight(5F),
+            state = pagerState,
+        ) { page ->
+            val currentOnboardingPage = onboardPagesList[page]
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+
+
+            ) {
+                Image(
+                    painter = painterResource(currentOnboardingPage.imageRes),
+                    modifier = Modifier
+                        .size(256.dp),
+                    contentDescription = null,
+                )
                 Column(
-                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-
-
-                ) {
-                    Image(
-                        painter = painterResource(currentOnboardingPage.imageRes),
-                        modifier = Modifier
-                            .size(256.dp),
-                        contentDescription = null,
+                    modifier = Modifier.padding(top = 80.dp, start = 16.dp, end = 16.dp)
+                ){
+                    Text(
+                        text = stringResource(currentOnboardingPage.titleRes),
+                        style = typography.titleMedium,
+                        modifier = Modifier.padding(bottom = 16.dp)
                     )
-                    Column(
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.padding(top = 80.dp, start = 16.dp, end = 16.dp)
-                    ){
-                        Text(
-                            text = stringResource(currentOnboardingPage.titleRes),
-                            style = typography.titleMedium,
-                            modifier = Modifier.padding(bottom = 16.dp)
-                        )
-                        Text(
-                            text = stringResource(id = currentOnboardingPage.bodyRes),
-                            textAlign = TextAlign.Center,
-                            style = typography.bodyMedium,
-                            modifier = Modifier
-                        )
-                    }
-                    
+                    Text(
+                        text = stringResource(id = currentOnboardingPage.bodyRes),
+                        textAlign = TextAlign.Center,
+                        style = typography.bodyMedium,
+                        modifier = Modifier
+                    )
                 }
 
             }
+
         }
         
         Column(

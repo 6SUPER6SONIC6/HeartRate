@@ -23,7 +23,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.supersonic.heartrate.R
-import com.supersonic.heartrate.components.BackgroundedSurface
 import com.supersonic.heartrate.components.ResultCard
 import com.supersonic.heartrate.components.TopBar
 import com.supersonic.heartrate.models.HeartRate
@@ -100,21 +99,16 @@ private fun ResultScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        BackgroundedSurface(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .weight(5F),
-        ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ){
-                ResultCard(
-                    modifier = Modifier.padding(16.dp),
-                    heartRate = heartRate
-                )
-            }
+            contentAlignment = Alignment.Center
+        ){
+            ResultCard(
+                modifier = Modifier.padding(16.dp),
+                heartRate = heartRate
+            )
         }
 
         Box(

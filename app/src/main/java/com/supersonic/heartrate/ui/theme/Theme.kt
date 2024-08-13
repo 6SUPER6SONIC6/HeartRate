@@ -12,7 +12,8 @@ private val LightColorScheme = lightColorScheme(
     secondary = secondary,
     primaryContainer = primaryContainer,
     onPrimaryContainer = onPrimaryContainer,
-    secondaryContainer = secondaryContainer
+    secondaryContainer = secondaryContainer,
+    background = background
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),

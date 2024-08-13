@@ -2,6 +2,7 @@ package com.supersonic.heartrate.screens.homepage
 
 import android.Manifest
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,8 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -34,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,7 +43,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.components.AnimatedLinearProgressIndicator
-import com.supersonic.heartrate.components.BackgroundedSurface
+import com.supersonic.heartrate.components.ScreenTemplate
 import com.supersonic.heartrate.components.TopBar
 import com.supersonic.heartrate.navigation.NavigationDestination
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
@@ -69,42 +67,43 @@ fun HomepageScreen(
     val scope = rememberCoroutineScope()
     val id = viewModel.insertedHeartRateId
 
-    when(homePageUiState){
-        HomePageUiState.Home -> {
-            Scaffold(
-                topBar = {
-                    HomePageTopBar(onNavigateToResultHistory = onNavigateToResultHistory)
-                }
-            ){
-//                AnimatedVisibility(visible = homePageUiState == HomePageUiState.Home){
-                    HomepageScreenContent(
-                        modifier = modifier
-                            .padding(it)
-                            .fillMaxSize(),
-                        isFirstMeasurement = heartRatesList.isEmpty(),
-                        onMeasurementButtonClick = {
-                            if (cameraPermissionState.hasPermission) viewModel.openMeasurementScreen()
-                            else cameraPermissionState.launchPermissionRequest()
-                        }
-                    )
-//                }
-            }
-        }
-        HomePageUiState.Measurement -> {
-//            AnimatedVisibility(visible = homePageUiState == HomePageUiState.Measurement) {
-                MeasurementContent(
-                    modifier = modifier.fillMaxSize(),
-                    onCancelMeasurement = { viewModel.openHomeScreen() },
-                    onMeasurementFinish = {
-                        scope.launch {
-                            viewModel.onMeasurementFinish(it)
-                        }
-                    }
-                )
-//            }
-
-        }
+    BackHandler(
+        enabled = homePageUiState != HomePageUiState.Home
+    ) {
+        viewModel.openHomeScreen()
     }
+
+    ScreenTemplate(
+        topBar = {
+            HomePageTopBar(
+                onNavigateToResultHistory = onNavigateToResultHistory,
+                isBackIconEnabled = homePageUiState == HomePageUiState.Measurement,
+                onBackClick = { viewModel.openHomeScreen() },
+            )
+        }
+    ) {
+        when(homePageUiState){
+            HomePageUiState.Home -> HomepageScreenContent(
+                modifier = modifier
+                    .fillMaxSize(),
+                isFirstMeasurement = heartRatesList.isEmpty(),
+                onMeasurementButtonClick = {
+                    if (cameraPermissionState.hasPermission) viewModel.openMeasurementScreen()
+                    else cameraPermissionState.launchPermissionRequest()
+                }
+            )
+            HomePageUiState.Measurement -> MeasurementContent(
+                modifier = modifier.fillMaxSize(),
+                onMeasurementFinish = {
+                    scope.launch {
+                        viewModel.onMeasurementFinish(it)
+                    }
+                }
+            )
+        }
+
+    }
+
 
     LaunchedEffect(id) {
     Log.d("insertedHeartRateId", "insertedHeartRateId: $id")
@@ -119,8 +118,13 @@ fun HomepageScreen(
 private fun HomePageTopBar(
     modifier: Modifier = Modifier,
     onNavigateToResultHistory: () -> Unit,
+    isBackIconEnabled: Boolean = false,
+    onBackClick: () -> Unit = {},
 ) {
     TopBar(
+        modifier = modifier,
+        isBackIconEnabled = isBackIconEnabled,
+        onBackClick = onBackClick,
         actions = {
             Text(
                 text = stringResource(R.string.topAppBar_title_history),
@@ -150,30 +154,23 @@ private fun HomepageScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        BackgroundedSurface(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(5F),
-        ){
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-            ) {
-                if (isFirstMeasurement){
-                    Text(
-                        text = stringResource(R.string.homePage_title1),
-                        style = typography.titleLarge,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(top = 32.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.height(128.dp))
-                Image(
-                    painter = painterResource(R.drawable.heart),
-                    contentDescription = null
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(5F)
+        ) {
+            if (isFirstMeasurement){
+                Text(
+                    text = stringResource(R.string.homePage_title1),
+                    style = typography.titleLarge,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(top = 32.dp)
                 )
             }
-
-
+            Spacer(modifier = Modifier.height(128.dp))
+            Image(
+                painter = painterResource(R.drawable.heart),
+                contentDescription = null
+            )
         }
 
         Box(
@@ -199,8 +196,7 @@ private fun HomepageScreenContent(
 @Composable
 fun MeasurementContent(
     modifier: Modifier = Modifier,
-    onMeasurementFinish: (Int) -> Unit,
-    onCancelMeasurement: () -> Unit
+    onMeasurementFinish: (Int) -> Unit
 ) {
     var currentHeartRate by remember { mutableIntStateOf(0) }
     var isFingerDetected by remember { mutableStateOf(false) }
@@ -210,134 +206,101 @@ fun MeasurementContent(
         verticalArrangement = Arrangement.Center,
         modifier = modifier
     ) {
-        BackgroundedSurface(
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(5F),
+                .weight(5F)
         ) {
+            Box(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .size(64.dp)
+                    .clip(CircleShape)
+
+            ) {
+                CameraPreview(
+                    isFingerDetected = { isFingerDetected = it },
+                    onHeartRateCalculated = { currentHeartRate = it }
+                )
+            }
+
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.padding(top = 16.dp)
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp),
-                    contentAlignment = Alignment.CenterEnd
-                ){
-                    if (!isFingerDetected) {
-                        IconButton(
-                            onClick = onCancelMeasurement,
-                            colors = IconButtonDefaults.iconButtonColors(
-                                contentColor = Color.Gray
-                            ),
-                            modifier = Modifier
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Close,
-                                contentDescription = null
-                            )
-                        }
-                    }
-                }
+                Text(
+                    text = if (isFingerDetected)
+                        stringResource(R.string.measurement_fingerDetected_text1)
+                    else stringResource(R.string.measurement_fingerNotDetected_text1),
+                    style = typography.bodyLarge,
+                    textAlign = TextAlign.Center
+                )
+                Text(
+                    text = if (isFingerDetected)
+                        stringResource(R.string.measurement_fingerDetected_text2)
+                    else stringResource(R.string.measurement_fingerNotDetected_text2),
+                    style = typography.bodyMedium,
+                    color = colorScheme.onPrimary,
+                    textAlign = TextAlign.Center
+                )
+            }
 
-                Box(
-                    modifier = Modifier
-                        .size(56.dp)
-                        .clip(CircleShape)
-                ) {
-                    CameraPreview(
-                        isFingerDetected = { isFingerDetected = it },
-                        onHeartRateCalculated = { currentHeartRate = it }
-                    )
-                }
+            Spacer(modifier = Modifier.height(48.dp))
 
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.heart2),
+                    modifier = Modifier,
+                    contentDescription = null
+                )
                 Column(
+                    modifier = Modifier
+                        .padding(bottom = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(top = 16.dp)
+                    verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = if (isFingerDetected)
-                            stringResource(R.string.measurement_fingerDetected_text1)
-                        else stringResource(R.string.measurement_fingerNotDetected_text1),
-                        style = typography.bodyLarge,
+                        text = if (isFingerDetected) "$currentHeartRate" else "--",
+                        style = typography.displayLarge,
+                        color = colorScheme.onPrimary,
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        text = if (isFingerDetected)
-                            stringResource(R.string.measurement_fingerDetected_text2)
-                        else stringResource(R.string.measurement_fingerNotDetected_text2),
-                        style = typography.bodyMedium,
+                        text = stringResource(R.string.bpm),
+                        style = typography.displaySmall,
                         color = colorScheme.onPrimary,
                         textAlign = TextAlign.Center
                     )
                 }
 
-                Spacer(modifier = Modifier.height(48.dp))
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.heart2),
-                        modifier = Modifier,
-                        contentDescription = null
-                    )
-                    Column(
-                        modifier = Modifier
-                            .padding(bottom = 8.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                    ) {
-                        Text(
-                            text = if (isFingerDetected) "$currentHeartRate" else "--",
-                            style = typography.displayLarge,
-                            color = colorScheme.onPrimary,
-                            textAlign = TextAlign.Center
-                        )
-                        Text(
-                            text = stringResource(R.string.bpm),
-                            style = typography.displaySmall,
-                            color = colorScheme.onPrimary,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-
-                }
-
-
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(180.dp),
-                    contentAlignment = Alignment.Center
-                ){
-                    if (isFingerDetected) {
-                        AnimatedLinearProgressIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth(.8f),
-                            animationDuration = 10_000,
-                            strokeCap = StrokeCap.Round,
-                            trackColor = colorScheme.secondary,
-                            onLoadFinish = { onMeasurementFinish(currentHeartRate) }
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(id = R.drawable.hands_phone),
-                            modifier = Modifier
-                                .size(width = 141.dp, height = 174.dp),
-                            contentDescription = null
-                        )
-                    }
-                }
-
             }
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(180.dp)
+                    .weight(1F),
+                contentAlignment = Alignment.Center
+            ){
+                if (isFingerDetected) {
+                    AnimatedLinearProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth(.8f),
+                        animationDuration = 1_000,
+                        strokeCap = StrokeCap.Round,
+                        trackColor = colorScheme.secondary,
+                        onLoadFinish = { onMeasurementFinish(currentHeartRate) }
+                    )
+                }
+            }
+
         }
-        Spacer(modifier = Modifier.weight(1F))
     }
 
 }
@@ -364,9 +327,8 @@ private fun MeasurementContentPreview() {
             MeasurementContent(modifier = Modifier
                 .padding(it)
                 .fillMaxSize(),
-                onCancelMeasurement = {},
                 onMeasurementFinish = {}
-                )
+            )
         }
     }
 }

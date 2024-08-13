@@ -46,7 +46,9 @@ fun RootAppNavigation(
                     navController.navigate(
                         if (isFirstRun(context)) OnboardingScreenDestination.route
                         else HomepageScreenDestination.route
-                    )
+                    ) {
+                        popUpTo(0)
+                    }
                 }
             )
         }

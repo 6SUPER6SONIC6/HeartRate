@@ -1,7 +1,6 @@
 package com.supersonic.heartrate.screens.resultHistory
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -24,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.supersonic.heartrate.R
-import com.supersonic.heartrate.components.BackgroundedSurface
 import com.supersonic.heartrate.components.HistoryCard
 import com.supersonic.heartrate.components.TopBar
 import com.supersonic.heartrate.models.HeartRate
@@ -87,33 +85,14 @@ private fun ResultHistoryScreenContent(
     heartRatesList: List<HeartRate>,
     onClearHistoryClick: () -> Unit
 ) {
-    Box(
+    Column(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
     ) {
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            BackgroundedSurface(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(5F),
-            ){}
-
-            Box(
-                modifier = Modifier
-                    .weight(1F),
-            )
-        }
-
         if (heartRatesList.isNotEmpty()){
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 40.dp),
+                    .weight(5F),
             ) {
                 items(heartRatesList, key = { it.id }) { heartRate ->
                     HistoryCard(
@@ -121,21 +100,25 @@ private fun ResultHistoryScreenContent(
                         modifier = Modifier.padding(8.dp)
                     )
                 }
+            }
 
-                item {
-                    Button(
-                        onClick = onClearHistoryClick,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(62.dp)
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.historyPage_button1),
-                            modifier = Modifier,
-                            style = MaterialTheme.typography.labelMedium
-                        )
-                    }
+            Box(
+                modifier = Modifier
+                .weight(1F),
+                contentAlignment = Alignment.Center
+            ) {
+                Button(
+                    onClick = onClearHistoryClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(62.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.historyPage_button1),
+                        modifier = Modifier,
+                        style = MaterialTheme.typography.labelMedium
+                    )
                 }
             }
         } else {

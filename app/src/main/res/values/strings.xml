@@ -39,6 +39,10 @@
     <string name="resultCard_standard_value">60–100 BPM</string>
     <string name="resultCard_frequent_value">>100 BPM</string>
     <string name="history_empty_text">Ви не зробили жодного вимірювання</string>
+    <string name="ChooseMeasurementAccuracy">Виберіть точність вимірювання:</string>
+    <string name="measurementAccuracy_low">Низька – 10 сек</string>
+    <string name="measurementAccuracy_mid">Середня – 20 сек</string>
+    <string name="measurementAccuracy_high">Висока – 30 сек</string>
 
 
 </resources>

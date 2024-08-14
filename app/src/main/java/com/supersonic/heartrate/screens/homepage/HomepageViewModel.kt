@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.supersonic.heartrate.R
 import com.supersonic.heartrate.db.HeartRateRepository
 import com.supersonic.heartrate.models.HeartRate
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +35,12 @@ class HomepageViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5_000),
                 initialValue = emptyList()
             )
+
+    val measurementAccuracyMap = mapOf(
+        R.string.measurementAccuracy_low to 10_000,
+        R.string.measurementAccuracy_mid to 20_000,
+        R.string.measurementAccuracy_high to 30_000,
+    )
 
     var insertedHeartRateId by mutableIntStateOf(0)
         private set

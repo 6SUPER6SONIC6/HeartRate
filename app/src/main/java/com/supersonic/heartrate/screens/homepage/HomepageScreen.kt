@@ -7,10 +7,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -43,11 +41,13 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.components.AnimatedLinearProgressIndicator
+import com.supersonic.heartrate.components.DropdownList
 import com.supersonic.heartrate.components.ScreenTemplate
 import com.supersonic.heartrate.components.TopBar
 import com.supersonic.heartrate.navigation.NavigationDestination
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 object HomepageScreenDestination : NavigationDestination {
     override val route = "homepage"
@@ -94,6 +94,7 @@ fun HomepageScreen(
             )
             HomePageUiState.Measurement -> MeasurementContent(
                 modifier = modifier.fillMaxSize(),
+                measurementAccuracyMap = viewModel.measurementAccuracyMap,
                 onMeasurementFinish = {
                     scope.launch {
                         viewModel.onMeasurementFinish(it)
@@ -149,43 +150,41 @@ private fun HomepageScreenContent(
     isFirstMeasurement: Boolean = true,
     onMeasurementButtonClick: () -> Unit
 ) {
-    Column(
+    Box(
         modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(5F)
-        ) {
-            if (isFirstMeasurement){
-                Text(
-                    text = stringResource(R.string.homePage_title1),
-                    style = typography.titleLarge,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 32.dp)
-                )
-            }
-            Spacer(modifier = Modifier.height(128.dp))
-            Image(
-                painter = painterResource(R.drawable.heart),
-                contentDescription = null
+        if (isFirstMeasurement){
+            Text(
+                text = stringResource(R.string.homePage_title1),
+                style = typography.titleLarge,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp)
             )
         }
 
+        Image(
+            painter = painterResource(R.drawable.heart),
+            modifier = Modifier
+                .align(Alignment.Center)
+                .size(260.dp),
+            contentDescription = null
+        )
+
         Box(
             modifier = Modifier
-                .weight(1F)
-
+                .align(Alignment.BottomCenter)
         ){
             IconButton(
                 onClick = onMeasurementButtonClick,
                 modifier = Modifier
-                    .size(114.dp)
+                    .size(120.dp)
+                    .padding(bottom = 8.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.button),
-                    modifier = Modifier.size(114.dp),
+                    modifier = Modifier.size(120.dp),
                     contentDescription = null
                 )
             }
@@ -196,29 +195,34 @@ private fun HomepageScreenContent(
 @Composable
 fun MeasurementContent(
     modifier: Modifier = Modifier,
+    measurementAccuracyMap: Map<Int, Int>,
     onMeasurementFinish: (Int) -> Unit
 ) {
     var currentHeartRate by remember { mutableIntStateOf(0) }
     var isFingerDetected by remember { mutableStateOf(false) }
 
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
+    val measurementAccuracyKeysList = measurementAccuracyMap.keys.toList()
+    var selectedItem by remember {
+        mutableIntStateOf(measurementAccuracyKeysList.first())
+    }
+
+    Box(
         modifier = modifier
     ) {
+
+        // Camera
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(5F)
-        ) {
+                .align(Alignment.TopCenter),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ){
             Box(
                 modifier = Modifier
                     .padding(top = 8.dp)
                     .size(64.dp)
-                    .clip(CircleShape)
-
+                    .clip(CircleShape),
             ) {
                 CameraPreview(
                     isFingerDetected = { isFingerDetected = it },
@@ -247,59 +251,82 @@ fun MeasurementContent(
                     textAlign = TextAlign.Center
                 )
             }
+        }
 
-            Spacer(modifier = Modifier.height(48.dp))
 
-            Box(
-                contentAlignment = Alignment.Center,
+        // Heart
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.heart2),
+                modifier = Modifier.size(260.dp),
+                contentDescription = null
+            )
+            Column(
                 modifier = Modifier
+                    .padding(bottom = 8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.heart2),
-                    modifier = Modifier,
-                    contentDescription = null
+                Text(
+                    text = if (isFingerDetected) "$currentHeartRate" else "--",
+                    style = typography.displayLarge,
+                    color = colorScheme.onPrimary,
+                    textAlign = TextAlign.Center
                 )
-                Column(
-                    modifier = Modifier
-                        .padding(bottom = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(
-                        text = if (isFingerDetected) "$currentHeartRate" else "--",
-                        style = typography.displayLarge,
-                        color = colorScheme.onPrimary,
-                        textAlign = TextAlign.Center
-                    )
-                    Text(
-                        text = stringResource(R.string.bpm),
-                        style = typography.displaySmall,
-                        color = colorScheme.onPrimary,
-                        textAlign = TextAlign.Center
-                    )
-                }
-
+                Text(
+                    text = stringResource(R.string.bpm).uppercase(Locale.ROOT),
+                    style = typography.displaySmall,
+                    color = colorScheme.onPrimary,
+                    textAlign = TextAlign.Center
+                )
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(180.dp)
-                    .weight(1F),
-                contentAlignment = Alignment.Center
-            ){
-                if (isFingerDetected) {
+        }
+
+
+
+//        Spacer(modifier = Modifier.height(180.dp))
+
+        // Progress Bar / Measurement Accuracy Choosing
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 80.dp),
+            contentAlignment = Alignment.Center
+        ){
+            if (isFingerDetected) {
+                measurementAccuracyMap[selectedItem]?.let {
                     AnimatedLinearProgressIndicator(
                         modifier = Modifier
                             .fillMaxWidth(.8f),
-                        animationDuration = 1_000,
+                        animationDuration = it,
                         strokeCap = StrokeCap.Round,
                         trackColor = colorScheme.secondary,
                         onLoadFinish = { onMeasurementFinish(currentHeartRate) }
                     )
                 }
+            } else {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ){
+                    Text(
+                        text = stringResource(R.string.ChooseMeasurementAccuracy),
+                        style = typography.bodyLarge,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+                    DropdownList(
+                        itemList = measurementAccuracyKeysList,
+                        selectedItem = stringResource(id = selectedItem),
+                        onItemClick = { selectedItem = it }
+                    )
+                }
             }
-
         }
     }
 
@@ -327,7 +354,8 @@ private fun MeasurementContentPreview() {
             MeasurementContent(modifier = Modifier
                 .padding(it)
                 .fillMaxSize(),
-                onMeasurementFinish = {}
+                onMeasurementFinish = {},
+                measurementAccuracyMap = mapOf()
             )
         }
     }

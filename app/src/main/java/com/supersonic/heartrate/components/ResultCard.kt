@@ -19,7 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
@@ -29,18 +28,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.models.HeartRate
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
+import com.supersonic.heartrate.util.highColor
+import com.supersonic.heartrate.util.identifyAccuracyColor
+import com.supersonic.heartrate.util.identifyResultColor
+import com.supersonic.heartrate.util.identifyResultText
+import com.supersonic.heartrate.util.lowColor
+import com.supersonic.heartrate.util.midColor
 
-val delayedColor = Color(0xFF40C4FF)
-val standardColor = Color(0xFF00C853)
-val frequentColor = Color(0xFFFF5252)
 @Composable
 fun ResultCard(
     modifier: Modifier = Modifier,
@@ -78,81 +80,85 @@ fun ResultCard(
                         style = typography.titleLarge,
                         color = identifyResultColor(heartRate.bpm)
                     )
+
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                  Icon(
-                      painter = painterResource(id = R.drawable.icon_time_24px),
-                      modifier = Modifier
-                          .padding(2.dp)
-                          .size(18.dp),
-                      tint = Color.Gray,
-                      contentDescription = null,
-                  )
-                    Column {
-                        Text(
-                            text = heartRate.time,
-                            style = typography.bodyMedium,
-                            color = Color.Gray
-                        )
-
-                        Text(
-                            text = heartRate.date,
-                            style = typography.bodyMedium,
-                            color = Color.Gray
-                        )
-                    }
-                }
-            }
-            // Indicator
-            Box(
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
-                    .fillMaxWidth()
-                    .height(24.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 6.dp)
-                        .clip(CircleShape)
-                ){
-                    Box(
-                        modifier = Modifier
-                            .weight(1F)
-                            .background(delayedColor)
-                            .height(24.dp)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .weight(1F)
-                            .background(standardColor)
-                            .height(24.dp)
-                    )
-                    Box(
-                        modifier = Modifier
-                            .weight(1F)
-                            .background(frequentColor)
-                            .height(24.dp)
-                    )
-                }
-                val indicatorOffset by animateDpAsState(
-                    targetValue = calculateIndicatorOffset(heartRate.bpm, 340.dp),
-                    animationSpec = tween(
-                        durationMillis = 1_500
-                    ),
-                    label = "indicator animation"
+                Text(
+                    text = "${heartRate.bpm} " + stringResource(R.string.bpm),
+                    style = typography.displaySmall
                 )
+            }
+
+            // Indicator
+            Column(
+                modifier = Modifier.padding(top = 2.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ){
+
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = "Точність вимірювання – ",
+                        style = typography.bodySmall
+                    )
+                    Text(
+                        text = stringResource(heartRate.measurementAccuracy),
+                        color = identifyAccuracyColor(heartRate.measurementAccuracy),
+                        style = typography.bodySmall.copy(fontWeight = FontWeight.Bold)
+                    )
+                }
+
+
                 Box(
                     modifier = Modifier
-                        .align(Alignment.CenterStart)
-                        .offset(x = indicatorOffset)
-                        .background(Color.White, shape = RoundedCornerShape(4.dp))
-                        .size(width = 6.dp, height = 20.dp)
-                        .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
-                )
+//                        .padding(vertical = 16.dp)
+                        .fillMaxWidth()
+                        .height(24.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 6.dp)
+                            .clip(CircleShape)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .weight(1F)
+                                .background(lowColor)
+                                .height(24.dp)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1F)
+                                .background(midColor)
+                                .height(24.dp)
+                        )
+                        Box(
+                            modifier = Modifier
+                                .weight(1F)
+                                .background(highColor)
+                                .height(24.dp)
+                        )
+                    }
+                    val indicatorOffset by animateDpAsState(
+                        targetValue = calculateIndicatorOffset(heartRate.bpm, 340.dp),
+                        animationSpec = tween(
+                            durationMillis = 1_500
+                        ),
+                        label = "indicator animation"
+                    )
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.CenterStart)
+                            .offset(x = indicatorOffset)
+                            .background(Color.White, shape = RoundedCornerShape(4.dp))
+                            .size(width = 6.dp, height = 20.dp)
+                            .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
+                    )
+                }
             }
 
             Column(
@@ -184,7 +190,7 @@ fun ResultCard(
                                     .padding(vertical = 4.dp)
                                     .size(8.dp)
                                     .background(
-                                        color = delayedColor,
+                                        color = lowColor,
                                         shape = CircleShape
                                     )
                             )
@@ -200,7 +206,7 @@ fun ResultCard(
                         Text(
                             text = stringResource(id = R.string.resultCard_delayed_value),
                             style = typography.bodySmall,
-                            color = if (identifyResultColor(heartRate.bpm) == delayedColor) Color.Black
+                            color = if (identifyResultColor(heartRate.bpm) == lowColor) Color.Black
                                     else Color.Gray
                         )
                     }
@@ -228,7 +234,7 @@ fun ResultCard(
                             Box(modifier = Modifier
                                 .size(8.dp)
                                 .background(
-                                    color = standardColor,
+                                    color = midColor,
                                     shape = CircleShape
                                 ))
                             Spacer(modifier = Modifier.width(6.dp))
@@ -243,7 +249,7 @@ fun ResultCard(
                         Text(
                             text = stringResource(id = R.string.resultCard_standard_value),
                             style = typography.bodySmall,
-                            color = if (identifyResultColor(heartRate.bpm) == standardColor) Color.Black
+                            color = if (identifyResultColor(heartRate.bpm) == midColor) Color.Black
                             else Color.Gray
                         )
                     }
@@ -272,7 +278,7 @@ fun ResultCard(
                             Box(modifier = Modifier
                                 .size(8.dp)
                                 .background(
-                                    color = frequentColor,
+                                    color = highColor,
                                     shape = CircleShape
                                 ))
                             Spacer(modifier = Modifier.width(6.dp))
@@ -287,7 +293,7 @@ fun ResultCard(
                         Text(
                             text = stringResource(id = R.string.resultCard_frequent_value),
                             style = typography.bodySmall,
-                            color = if (identifyResultColor(heartRate.bpm) == frequentColor) Color.Black
+                            color = if (identifyResultColor(heartRate.bpm) == highColor) Color.Black
                             else Color.Gray
                         )
                     }
@@ -304,31 +310,15 @@ fun ResultCard(
 private fun ResultCardPreview() {
     HeartRateTheme {
         ResultCard(
-            heartRate =  HeartRate(0,50, "12:54", "19/06/2024"),
+            heartRate =  HeartRate(0,85, "12:54", "19/06/2024", R.string.measurementAccuracy_high),
             modifier = Modifier.padding(30.dp)
         )
     }
 }
 
-fun identifyResultText(bpm: Int): Int{
-    return when{
-        bpm < 60 -> R.string.resultCard_delayed
-        bpm in 60..100 -> R.string.resultCard_standard
 
-        else -> R.string.resultCard_frequent
-    }
-}
 
-fun identifyResultColor(bpm: Int): Color {
-    return when {
-        bpm < 60 -> delayedColor
-        bpm in 60..100 -> standardColor
-
-        else -> frequentColor
-    }
-}
-
-fun calculateIndicatorOffset(bpm: Int, maxWidth: Dp): Dp {
+private fun calculateIndicatorOffset(bpm: Int, maxWidth: Dp): Dp {
 
     val offsetFraction = when {
         bpm < 59 -> bpm / 60f * 0.33f

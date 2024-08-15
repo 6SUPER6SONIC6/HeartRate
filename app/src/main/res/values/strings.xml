@@ -28,21 +28,28 @@
     <string name="measurement_fingerDetected_text1">Йде Вимірювання.</string>
     <string name="measurement_fingerDetected_text2">Визначаємо ваш пульс. Утримуйте!</string>
 
-    <string name="bpm">bpm</string>
+    <string name="bpm">BPM</string>
 
     <string name="resultCard_title">Ваш Результат</string>
 
     <string name="resultCard_delayed">Уповільнений</string>
     <string name="resultCard_standard">Звичайно</string>
     <string name="resultCard_frequent">Прискорений</string>
+
     <string name="resultCard_delayed_value"> &lt;60 BPM</string>
     <string name="resultCard_standard_value">60–100 BPM</string>
     <string name="resultCard_frequent_value">>100 BPM</string>
+
     <string name="history_empty_text">Ви не зробили жодного вимірювання</string>
     <string name="ChooseMeasurementAccuracy">Виберіть точність вимірювання:</string>
-    <string name="measurementAccuracy_low">Низька – 10 сек</string>
-    <string name="measurementAccuracy_mid">Середня – 20 сек</string>
-    <string name="measurementAccuracy_high">Висока – 30 сек</string>
+
+    <string name="measurementAccuracy_low_sec">Низька – 10 сек</string>
+    <string name="measurementAccuracy_mid_sec">Середня – 20 сек</string>
+    <string name="measurementAccuracy_high_sec">Висока – 30 сек</string>
+
+    <string name="measurementAccuracy_low">Низька</string>
+    <string name="measurementAccuracy_mid">Середня</string>
+    <string name="measurementAccuracy_high">Висока</string>
 
 
 </resources>

@@ -8,7 +8,7 @@ import com.supersonic.heartrate.models.HeartRate
 
 @Database(
     entities = [HeartRate::class],
-    version = 1
+    version = 2
     )
 abstract class HearRateDatabase : RoomDatabase() {
     abstract fun heartRateDao(): HeartRateDao

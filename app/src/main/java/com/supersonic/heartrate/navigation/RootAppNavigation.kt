@@ -1,6 +1,7 @@
 package com.supersonic.heartrate.navigation
 
 import android.content.Context
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -104,6 +105,7 @@ fun RootAppNavigation(
         composable(route = ResultHistoryScreenDestination.route) {
             val viewModel = hiltViewModel<ResultHistoryViewModel>()
             ResultHistoryScreen(
+                modifier = Modifier.fillMaxSize(),
                 viewModel = viewModel,
                 onBackClick = {
                     navController.navigate(HomepageScreenDestination.route){

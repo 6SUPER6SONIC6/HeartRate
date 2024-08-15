@@ -14,8 +14,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,9 +35,9 @@ class HomepageViewModel @Inject constructor(
             )
 
     val measurementAccuracyMap = mapOf(
-        R.string.measurementAccuracy_low to 10_000,
-        R.string.measurementAccuracy_mid to 20_000,
-        R.string.measurementAccuracy_high to 30_000,
+        R.string.measurementAccuracy_low_sec to 10_000,
+        R.string.measurementAccuracy_mid_sec to 20_000,
+        R.string.measurementAccuracy_high_sec to 30_000,
     )
 
     var insertedHeartRateId by mutableIntStateOf(0)
@@ -53,22 +51,8 @@ class HomepageViewModel @Inject constructor(
         _homepageUiState.value = HomePageUiState.Home
     }
 
-    suspend fun onMeasurementFinish(bpm: Int){
-        val currentDateTime: LocalDateTime = LocalDateTime.now()
-
-        val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-        val currentTime: String = currentDateTime.format(timeFormatter)
-
-        val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
-        val currentDate: String = currentDateTime.format(dateFormatter)
-
-       val id = saveHeartRate(
-            HeartRate(
-                bpm = bpm,
-                time = currentTime,
-                date = currentDate
-            )
-        )
+    suspend fun onMeasurementFinish(heartRate: HeartRate){
+        val id = saveHeartRate(heartRate)
         insertedHeartRateId = id
     }
 

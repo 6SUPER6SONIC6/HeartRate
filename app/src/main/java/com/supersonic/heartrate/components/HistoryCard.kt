@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +26,7 @@ import androidx.compose.ui.unit.sp
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.models.HeartRate
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
+import com.supersonic.heartrate.util.identifyAccuracyColor
 import java.util.Locale
 
 @Composable
@@ -36,7 +36,7 @@ fun HistoryCard(
 ) {
     Card(
         modifier = modifier
-            .height(80.dp),
+            .height(86.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color(0xFFFEFEFE)
         )
@@ -62,7 +62,7 @@ fun HistoryCard(
                     .weight(.1F)
                     .width(6.dp)
                     .background(
-                        color = colorScheme.primary,
+                        color = identifyAccuracyColor(heartRate.measurementAccuracy),
                         RoundedCornerShape(4.dp)
                     )
                     .padding(horizontal = 8.dp)
@@ -97,7 +97,7 @@ fun HistoryCard(
 private fun HistoryCardPreview() {
     HeartRateTheme {
         HistoryCard(
-            heartRate =  HeartRate(0,100, "12:54", "19/06/2024")
+            heartRate =  HeartRate(0,100, "12:54", "19/06/2024", R.string.measurementAccuracy_mid)
         )
     }
 }

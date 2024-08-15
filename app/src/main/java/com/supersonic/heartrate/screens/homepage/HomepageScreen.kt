@@ -44,9 +44,12 @@ import com.supersonic.heartrate.components.AnimatedLinearProgressIndicator
 import com.supersonic.heartrate.components.DropdownList
 import com.supersonic.heartrate.components.ScreenTemplate
 import com.supersonic.heartrate.components.TopBar
+import com.supersonic.heartrate.models.HeartRate
 import com.supersonic.heartrate.navigation.NavigationDestination
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object HomepageScreenDestination : NavigationDestination {
@@ -138,7 +141,11 @@ private fun HomePageTopBar(
                     contentColor = colorScheme.onPrimary
                 )
             ) {
-                Icon(painter = painterResource(id = R.drawable.icon_time_machine), contentDescription = null)
+                Icon(
+                    modifier = Modifier.size(24.dp),
+                    painter = painterResource(id = R.drawable.icon_time_machine),
+                    contentDescription = null
+                )
             }
         }
     )
@@ -196,7 +203,7 @@ private fun HomepageScreenContent(
 fun MeasurementContent(
     modifier: Modifier = Modifier,
     measurementAccuracyMap: Map<Int, Int>,
-    onMeasurementFinish: (Int) -> Unit
+    onMeasurementFinish: (HeartRate) -> Unit
 ) {
     var currentHeartRate by remember { mutableIntStateOf(0) }
     var isFingerDetected by remember { mutableStateOf(false) }
@@ -306,7 +313,20 @@ fun MeasurementContent(
                         animationDuration = it,
                         strokeCap = StrokeCap.Round,
                         trackColor = colorScheme.secondary,
-                        onLoadFinish = { onMeasurementFinish(currentHeartRate) }
+                        onLoadFinish = { onMeasurementFinish(
+                            HeartRate(
+                                bpm = currentHeartRate,
+                                time = getCurrentTime(),
+                                date = getCurrentDate(),
+                                measurementAccuracy = when(selectedItem){
+                                    R.string.measurementAccuracy_low_sec -> R.string.measurementAccuracy_low
+                                    R.string.measurementAccuracy_mid_sec -> R.string.measurementAccuracy_mid
+                                    R.string.measurementAccuracy_high_sec -> R.string.measurementAccuracy_high
+
+                                    else -> R.string.measurementAccuracy_mid
+                                },
+                            )
+                        ) }
                     )
                 }
             } else {
@@ -322,7 +342,7 @@ fun MeasurementContent(
                     )
                     DropdownList(
                         itemList = measurementAccuracyKeysList,
-                        selectedItem = stringResource(id = selectedItem),
+                        selectedItemResource = selectedItem,
                         onItemClick = { selectedItem = it }
                     )
                 }
@@ -359,4 +379,20 @@ private fun MeasurementContentPreview() {
             )
         }
     }
+}
+
+private fun getCurrentTime(): String{
+    val currentDateTime: LocalDateTime = LocalDateTime.now()
+    val timeFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+    val currentTime: String = currentDateTime.format(timeFormatter)
+
+    return currentTime
+}
+private fun getCurrentDate(): String{
+    val currentDateTime: LocalDateTime = LocalDateTime.now()
+
+    val dateFormatter: DateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy")
+    val currentDate: String = currentDateTime.format(dateFormatter)
+
+    return currentDate
 }

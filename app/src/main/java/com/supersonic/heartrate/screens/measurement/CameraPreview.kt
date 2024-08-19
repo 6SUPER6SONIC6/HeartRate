@@ -1,4 +1,4 @@
-package com.supersonic.heartrate.screens.homepage
+package com.supersonic.heartrate.screens.measurement
 
 import android.util.Log
 import androidx.camera.core.Camera

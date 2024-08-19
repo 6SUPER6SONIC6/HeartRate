@@ -13,7 +13,8 @@ object OnboardingPages {
         OnboardingPage(
             imageRes = R.drawable.hands_phone,
             titleRes = R.string.onboardingPage2_title,
-            bodyRes = R.string.onboardingPage2_body
+            bodyRes = R.string.onboardingPage2_body,
+            cameraPermission = true
         ),
         OnboardingPage(
             imageRes = R.drawable.result_card,

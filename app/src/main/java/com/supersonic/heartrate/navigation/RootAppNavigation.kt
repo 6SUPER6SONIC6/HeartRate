@@ -14,9 +14,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.supersonic.heartrate.screens.homepage.HomepageScreen
 import com.supersonic.heartrate.screens.homepage.HomepageScreenDestination
-import com.supersonic.heartrate.screens.homepage.HomepageViewModel
 import com.supersonic.heartrate.screens.loading.LoadingScreen
 import com.supersonic.heartrate.screens.loading.LoadingScreenDestination
+import com.supersonic.heartrate.screens.measurement.MeasurementScreen
+import com.supersonic.heartrate.screens.measurement.MeasurementScreenDestination
+import com.supersonic.heartrate.screens.measurement.MeasurementViewModel
 import com.supersonic.heartrate.screens.onboarding.OnboardingScreen
 import com.supersonic.heartrate.screens.onboarding.OnboardingScreenDestination
 import com.supersonic.heartrate.screens.result.ResultScreen
@@ -54,10 +56,10 @@ fun RootAppNavigation(
         composable(route = OnboardingScreenDestination.route) {
             val context = LocalContext.current
             OnboardingScreen(
-                onNavigationToHomepage = {
+                onOnboardingFinish = {
                     saveOnboardingCompleted(context)
-                    navController.navigate(HomepageScreenDestination.route) {
-                        popUpTo(0)
+                    navController.navigate(MeasurementScreenDestination.route) {
+                        popUpTo(HomepageScreenDestination.route)
                     }
                 }
             )
@@ -65,20 +67,31 @@ fun RootAppNavigation(
 
         //Homepage Screen
         composable(route = HomepageScreenDestination.route) {
-            val viewModel = hiltViewModel<HomepageViewModel>()
             val context = LocalContext.current
             HomepageScreen(
-                viewModel = viewModel,
                 needDisplayOnboarding = isFirstRun(context),
-                onNavigateToOnboarding = {
-                    navController.navigate(OnboardingScreenDestination.route)
+                onNavigationNext = {
+                    if (isFirstRun(context)) navController.navigate(OnboardingScreenDestination.route)
+                    else navController.navigate(MeasurementScreenDestination.route)
                                          },
+                onNavigateToResultHistory = {
+                    navController.navigate(ResultHistoryScreenDestination.route)
+                }
+            )
+        }
+
+        // Measurement Screen
+        composable(route = MeasurementScreenDestination.route) {
+            val viewModel = hiltViewModel<MeasurementViewModel>()
+            MeasurementScreen(
+                viewModel = viewModel,
                 onNavigateToResultHistory = {
                     navController.navigate(ResultHistoryScreenDestination.route)
                 },
                 onNavigationToResult = {
                     navController.navigate("${ResultScreenDestination.route}/${it}")
-                }
+                },
+                onNavigateBack = { navController.navigateUp() }
             )
         }
 

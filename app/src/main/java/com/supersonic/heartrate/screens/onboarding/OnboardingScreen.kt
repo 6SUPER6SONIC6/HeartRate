@@ -1,5 +1,9 @@
 package com.supersonic.heartrate.screens.onboarding
 
+import android.Manifest
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import androidx.compose.animation.core.EaseInCubic
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
@@ -20,23 +24,32 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.models.OnboardingPage
 import com.supersonic.heartrate.navigation.NavigationDestination
@@ -50,7 +63,7 @@ object OnboardingScreenDestination : NavigationDestination {
 @Composable
 fun OnboardingScreen(
     modifier: Modifier = Modifier,
-    onNavigationToHomepage: () -> Unit
+    onOnboardingFinish: () -> Unit
 ) {
     Scaffold(
         modifier = modifier
@@ -59,19 +72,51 @@ fun OnboardingScreen(
             modifier = Modifier
             .padding(it),
             onboardPagesList = OnboardingPages.pagesList,
-            onNavigationToHomepage = onNavigationToHomepage
+            onFinish = onOnboardingFinish
         )
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalPermissionsApi::class)
 @Composable
 private fun OnboardingScreenContent(
     modifier: Modifier = Modifier,
     onboardPagesList: List<OnboardingPage> = listOf(),
-    onNavigationToHomepage: () -> Unit
+    onFinish: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val  context = LocalContext.current
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+    var shouldShowRationale by remember { mutableStateOf(false) }
+
+    if (shouldShowRationale){
+        AlertDialog(
+            onDismissRequest = { shouldShowRationale = false },
+            title = {
+                Text(text = "Доступ до камери відхилено")
+            },
+            text = {
+                Text(text = "Ви не надали доступ до камери. Будь ласка зробіть це в налаштуваннях.")
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.fromParts("package", context.packageName, null)
+                    })
+                    shouldShowRationale = false
+                }) {
+                    Text(text = "В налаштування")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray),
+                    onClick = { shouldShowRationale = false }) {
+                    Text(text = "Відхилити")
+                }
+            }
+        )
+    }
     
     val pagerState = rememberPagerState(
         initialPage = 0,
@@ -119,6 +164,19 @@ private fun OnboardingScreenContent(
                         style = typography.bodyMedium,
                         modifier = Modifier
                     )
+
+                    if (currentOnboardingPage.cameraPermission){
+                        TextButton(
+                            modifier = Modifier.padding(top = 16.dp),
+                            enabled = !cameraPermissionState.hasPermission,
+                            onClick = {
+                                if (cameraPermissionState.permissionRequested) shouldShowRationale = true
+                                else cameraPermissionState.launchPermissionRequest()
+                            }
+                        ) {
+                            Text(text = "Надати доступ")
+                        }
+                    }
                 }
 
             }
@@ -164,7 +222,7 @@ private fun OnboardingScreenContent(
                             modifier = Modifier
                                 .padding(4.dp)
                                 .size(width = width, height = 14.dp)
-                                .background(Color.LightGray, shape = CircleShape)
+                                .background(Color.Gray, shape = CircleShape)
                                 .clickable {
                                     scope.launch {
                                         pagerState.animateScrollToPage(it)
@@ -178,12 +236,17 @@ private fun OnboardingScreenContent(
             }
             
             Button(
+                enabled = when{
+                    pagerState.currentPage == onboardPagesList.lastIndex && cameraPermissionState.hasPermission -> true
+                    pagerState.currentPage != onboardPagesList.lastIndex -> true
+                    else -> false
+                },
                 onClick = {
                 scope.launch{
                     pagerState.animateScrollToPage(pagerState.currentPage + 1)
                 }
-                    if (pagerState.currentPage == onboardPagesList.lastIndex){
-                        onNavigationToHomepage.invoke()
+                    if (pagerState.currentPage == onboardPagesList.lastIndex && cameraPermissionState.hasPermission){
+                        onFinish.invoke()
                     }
             },
                 modifier = Modifier
@@ -211,7 +274,7 @@ private fun OnboardingScreenContentPreview() {
         Scaffold {
             OnboardingScreenContent(
                 modifier = Modifier.padding(it),
-                onNavigationToHomepage = {},
+                onFinish = {},
                 onboardPagesList = OnboardingPages.pagesList
                 )
         }

@@ -41,13 +41,9 @@ fun RootAppNavigation(
     ) {
         //Loading Screen
         composable(route = LoadingScreenDestination.route) {
-            val context = LocalContext.current
             LoadingScreen(
                 onNavigationNext = {
-                    navController.navigate(
-                        if (isFirstRun(context)) OnboardingScreenDestination.route
-                        else HomepageScreenDestination.route
-                    ) {
+                    navController.navigate(HomepageScreenDestination.route) {
                         popUpTo(0)
                     }
                 }
@@ -70,8 +66,13 @@ fun RootAppNavigation(
         //Homepage Screen
         composable(route = HomepageScreenDestination.route) {
             val viewModel = hiltViewModel<HomepageViewModel>()
+            val context = LocalContext.current
             HomepageScreen(
                 viewModel = viewModel,
+                needDisplayOnboarding = isFirstRun(context),
+                onNavigateToOnboarding = {
+                    navController.navigate(OnboardingScreenDestination.route)
+                                         },
                 onNavigateToResultHistory = {
                     navController.navigate(ResultHistoryScreenDestination.route)
                 },

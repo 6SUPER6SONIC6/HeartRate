@@ -96,22 +96,6 @@ fun ResultCard(
                 verticalArrangement = Arrangement.Center
             ){
 
-                Row(
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ){
-                    Text(
-                        text = "Точність вимірювання – ",
-                        style = typography.bodySmall
-                    )
-                    Text(
-                        text = stringResource(heartRate.measurementAccuracy),
-                        color = identifyAccuracyColor(heartRate.measurementAccuracy),
-                        style = typography.bodySmall.copy(fontWeight = FontWeight.Bold)
-                    )
-                }
-
-
                 Box(
                     modifier = Modifier
 //                        .padding(vertical = 16.dp)
@@ -157,6 +141,22 @@ fun ResultCard(
                             .background(Color.White, shape = RoundedCornerShape(4.dp))
                             .size(width = 6.dp, height = 20.dp)
                             .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.padding(vertical = 2.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ){
+                    Text(
+                        text = stringResource(R.string.resultCard_measurementAccuracy_text),
+                        style = typography.bodySmall
+                    )
+                    Text(
+                        text = stringResource(heartRate.measurementAccuracy),
+                        color = identifyAccuracyColor(heartRate.measurementAccuracy),
+                        style = typography.bodySmall.copy(fontWeight = FontWeight.Bold)
                     )
                 }
             }

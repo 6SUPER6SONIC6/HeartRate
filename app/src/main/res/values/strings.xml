@@ -1,21 +1,21 @@
 <resources>
     <string name="app_name">Heart Rate</string>
 
-    <string name="onboardingPage1_title">Ваш трекер тиску</string>
-    <string name="onboardingPage1_body">Зазначайте, відстежуйте та аналізуйте свої показники артеріального тиску.</string>
+    <string name="onboardingPage1_title">Точність вимірювання</string>
+    <string name="onboardingPage1_body">Оберіть точність з якою буде зроблене вимірювання пульсу. Чим вища точність тим точніший результат!</string>
 
-    <string name="onboardingPage2_title">Персоналізовані поради</string>
-    <string name="onboardingPage2_body">Програма надає дієві поради, які допоможуть вам підтримувати оптимальний рівень артеріального тиску та зменшити фактори ризику серцево-судинних захворювань.</string>
+    <string name="onboardingPage2_title">Початок вимірювання</string>
+    <string name="onboardingPage2_body">Щільно прикладіть палець до камери, так щоб повністю її закрити. Тримайте палець до закінчення процесу вимірювання пульсу.</string>
 
-    <string name="onboardingPage3_title">Нагадування</string>
-    <string name="onboardingPage3_body">Не відставайте від графіка контролю артеріального тиску та прийому ліків за допомогою спеціальних нагадувань.</string>
+    <string name="onboardingPage3_title">Результати</string>
+    <string name="onboardingPage3_body">Після закінчення вимірювання ви отримаєте свій результат. Ви можете побачити минулі вимірювання на сторінці "Історія"</string>
 
     <string name="onboardingPage_button1">Почати!</string>
     <string name="onboardingPage_button2">Продовжити</string>
 
     <string name="resultPage_button1">Готово</string>
 
-    <string name="historyPage_button1">Очистити історію</string>
+    <string name="historyPage_delete_title">Очистити історію?</string>
 
     <string name="homePage_title1">Виконайте своє перше вимірювання!</string>
 
@@ -33,7 +33,7 @@
     <string name="resultCard_title">Ваш Результат</string>
 
     <string name="resultCard_delayed">Уповільнений</string>
-    <string name="resultCard_standard">Звичайно</string>
+    <string name="resultCard_standard">Звичайний</string>
     <string name="resultCard_frequent">Прискорений</string>
 
     <string name="resultCard_delayed_value"> &lt;60 BPM</string>
@@ -50,6 +50,14 @@
     <string name="measurementAccuracy_low">Низька</string>
     <string name="measurementAccuracy_mid">Середня</string>
     <string name="measurementAccuracy_high">Висока</string>
+
+    <string name="history_info_title">Що означає колір розділяючої полоси на картці результату?</string>
+    <string name="history_info_body">Точність з якою було зроблене вимірювання:</string>
+    <string name="history_info_body_low_accuracy">Низька точнісь</string>
+    <string name="history_info_body_mid_accuracy">Cередня точнісь</string>
+    <string name="history_info_body_high_accuracy">Висока точнісь</string>
+    <string name="history_info_button_text1">Зрозуміло</string>
+    <string name="resultCard_measurementAccuracy_text">"Точність вимірювання – "</string>
 
 
 </resources>

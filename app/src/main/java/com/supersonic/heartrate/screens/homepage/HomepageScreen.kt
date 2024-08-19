@@ -61,12 +61,13 @@ object HomepageScreenDestination : NavigationDestination {
 fun HomepageScreen(
     modifier: Modifier = Modifier,
     viewModel: HomepageViewModel,
+    needDisplayOnboarding: Boolean = true,
+    onNavigateToOnboarding: () -> Unit,
     onNavigateToResultHistory: () -> Unit,
     onNavigationToResult: (Int) -> Unit
 ) {
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     val homePageUiState by viewModel.homePageUiState.collectAsState()
-    val heartRatesList by viewModel.heartRatesList.collectAsState()
     val scope = rememberCoroutineScope()
     val id = viewModel.insertedHeartRateId
 
@@ -89,10 +90,13 @@ fun HomepageScreen(
             HomePageUiState.Home -> HomepageScreenContent(
                 modifier = modifier
                     .fillMaxSize(),
-                isFirstMeasurement = heartRatesList.isEmpty(),
+                isFirstMeasurement = needDisplayOnboarding,
                 onMeasurementButtonClick = {
-                    if (cameraPermissionState.hasPermission) viewModel.openMeasurementScreen()
-                    else cameraPermissionState.launchPermissionRequest()
+                    if (cameraPermissionState.hasPermission){
+                        if (needDisplayOnboarding){
+                            onNavigateToOnboarding.invoke()
+                        } else viewModel.openMeasurementScreen()
+                    } else cameraPermissionState.launchPermissionRequest()
                 }
             )
             HomePageUiState.Measurement -> MeasurementContent(

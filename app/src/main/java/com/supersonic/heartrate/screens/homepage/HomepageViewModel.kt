@@ -4,16 +4,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.db.HeartRateRepository
 import com.supersonic.heartrate.models.HeartRate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
@@ -25,14 +21,6 @@ class HomepageViewModel @Inject constructor(
 
     private val _homepageUiState = MutableStateFlow<HomePageUiState>(HomePageUiState.Home)
     val homePageUiState = _homepageUiState.asStateFlow()
-
-    val heartRatesList: StateFlow<List<HeartRate>> =
-        heartRateRepository.getAllHeartRatesStream()
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5_000),
-                initialValue = emptyList()
-            )
 
     val measurementAccuracyMap = mapOf(
         R.string.measurementAccuracy_low_sec to 10_000,

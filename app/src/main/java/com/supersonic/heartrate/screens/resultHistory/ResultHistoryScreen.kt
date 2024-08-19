@@ -16,13 +16,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,6 +33,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -70,12 +72,44 @@ fun ResultHistoryScreen(
     if (showDeleteDialog){
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },
+            icon = {
+                Icon(
+                modifier = Modifier.size(28.dp),
+                imageVector = Icons.Outlined.Delete,
+                tint = colorScheme.primary,
+                contentDescription = null
+            )
+                   },
+            title = {
+                Text(
+                    text = stringResource(R.string.historyPage_delete_title),
+                    textAlign = TextAlign.Center,
+                    style = typography.titleMedium,
+                )
+            },
+            text = {
+                Text(
+                    text = "Ви точно хочете очистити всю історію ваших вимірів?",
+                    textAlign = TextAlign.Center
+                )
+            },
             confirmButton = {
-                Button(onClick = { scope.launch {
+                TextButton(
+                    onClick = { scope.launch {
                     viewModel.clearHistory()
                     showDeleteDialog = false
-                } }) {
-                    Text(text = "Delete")
+                }
+                    },
+                ) {
+                    Text(text = "Так")
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showDeleteDialog = false },
+                    colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
+                ) {
+                    Text(text = "Ні")
                 }
             }
         )
@@ -83,9 +117,17 @@ fun ResultHistoryScreen(
     if (showInfoDialog){
         AlertDialog(
             onDismissRequest = { showInfoDialog = false },
+            icon = {
+                Icon(
+                    modifier = Modifier.size(28.dp),
+                    imageVector = Icons.Outlined.Info,
+                    tint = colorScheme.primary,
+                    contentDescription = null
+                )
+            },
             title = {
                 Text(
-                    text = "Що означає колір розділяючої полоси на картці результату?",
+                    text = stringResource(R.string.history_info_title),
                     textAlign = TextAlign.Center,
                     style = typography.titleMedium,
                 )
@@ -93,7 +135,7 @@ fun ResultHistoryScreen(
             text = {
                 Column {
                     Text(
-                        text = "З якою точністю було зроблене вимірювання:",
+                        text = stringResource(R.string.history_info_body),
                         textAlign = TextAlign.Start
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -110,7 +152,7 @@ fun ResultHistoryScreen(
                             style = typography.bodyMedium
                         )
                         Text(
-                            text = "Низька точнісь",
+                            text = stringResource(R.string.history_info_body_low_accuracy),
                             style = typography.bodyMedium
                         )
                     }
@@ -128,7 +170,7 @@ fun ResultHistoryScreen(
                             style = typography.bodyMedium
                         )
                         Text(
-                            text = "Cередня точнісь",
+                            text = stringResource(R.string.history_info_body_mid_accuracy),
                             style = typography.bodyMedium
                         )
                     }
@@ -146,17 +188,17 @@ fun ResultHistoryScreen(
                             style = typography.bodyMedium
                         )
                         Text(
-                            text = "Висока точнісь",
+                            text = stringResource(R.string.history_info_body_high_accuracy),
                             style = typography.bodyMedium
                         )
                     }
                 }
             },
             confirmButton = {
-                Button(onClick = { scope.launch {
+                TextButton(onClick = { scope.launch {
                     showInfoDialog = false
                 } }) {
-                    Text(text = "Зрозуміло")
+                    Text(text = stringResource(R.string.history_info_button_text1))
                 }
             }
         )

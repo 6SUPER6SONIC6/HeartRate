@@ -1,10 +1,17 @@
 package com.supersonic.heartrate.screens.homepage
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -13,8 +20,10 @@ import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -24,7 +33,6 @@ import com.supersonic.heartrate.R
 import com.supersonic.heartrate.components.ScreenTemplate
 import com.supersonic.heartrate.components.TopBar
 import com.supersonic.heartrate.navigation.NavigationDestination
-import com.supersonic.heartrate.screens.measurement.MeasurementContent
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
 
 object HomepageScreenDestination : NavigationDestination {
@@ -90,6 +98,15 @@ private fun HomepageScreenContent(
     isFirstMeasurement: Boolean = true,
     onMeasurementButtonClick: () -> Unit
 ) {
+
+    val infiniteTransition = rememberInfiniteTransition(label = "InfiniteTransition")
+    val animatedAlpha by infiniteTransition.animateFloat(
+        initialValue = 0F,
+        targetValue = 1F,
+        animationSpec = infiniteRepeatable(tween(1000), RepeatMode.Reverse),
+        label = "alpha"
+    )
+
     Box(
         modifier = modifier,
     ) {
@@ -100,7 +117,7 @@ private fun HomepageScreenContent(
                 textAlign = TextAlign.Center,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 16.dp)
+                    .padding(top = 24.dp)
             )
         }
 
@@ -115,16 +132,25 @@ private fun HomepageScreenContent(
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp),
+            contentAlignment = Alignment.Center
         ){
+
+            Box(
+                modifier = Modifier
+                    .alpha(if(isFirstMeasurement) animatedAlpha else 0F)
+                    .background(color = colorScheme.primary, CircleShape)
+                    .size(110.dp)
+            )
+
             IconButton(
                 onClick = onMeasurementButtonClick,
                 modifier = Modifier
                     .size(120.dp)
-                    .padding(bottom = 8.dp)
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.button),
-                    modifier = Modifier.size(120.dp),
+                    modifier = Modifier.size(100.dp),
                     contentDescription = null
                 )
             }
@@ -144,21 +170,6 @@ private fun HomepageScreenContentPreview() {
                 .fillMaxSize(),
                 onMeasurementButtonClick = {}
                 )
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun MeasurementContentPreview() {
-    HeartRateTheme {
-        Scaffold {
-            MeasurementContent(modifier = Modifier
-                .padding(it)
-                .fillMaxSize(),
-                onMeasurementFinish = {},
-                measurementAccuracyMap = mapOf()
-            )
         }
     }
 }

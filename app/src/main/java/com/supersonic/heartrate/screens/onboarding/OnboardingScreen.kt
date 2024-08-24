@@ -85,7 +85,7 @@ private fun OnboardingScreenContent(
     onFinish: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val  context = LocalContext.current
+    val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     var shouldShowRationale by remember { mutableStateOf(false) }
 
@@ -93,10 +93,18 @@ private fun OnboardingScreenContent(
         AlertDialog(
             onDismissRequest = { shouldShowRationale = false },
             title = {
-                Text(text = "Доступ до камери відхилено")
+                Text(
+                    text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_title),
+                    textAlign = TextAlign.Center,
+                    style = typography.titleMedium
+                )
             },
             text = {
-                Text(text = "Ви не надали доступ до камери. Будь ласка зробіть це в налаштуваннях.")
+                Text(
+                    text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_body),
+                    textAlign = TextAlign.Center,
+                    style = typography.bodyMedium
+                )
             },
             confirmButton = {
                 TextButton(onClick = {
@@ -105,14 +113,14 @@ private fun OnboardingScreenContent(
                     })
                     shouldShowRationale = false
                 }) {
-                    Text(text = "В налаштування")
+                    Text(text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_confirmButton))
                 }
             },
             dismissButton = {
                 TextButton(
                     colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray),
                     onClick = { shouldShowRationale = false }) {
-                    Text(text = "Відхилити")
+                    Text(text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_dismissButton))
                 }
             }
         )
@@ -139,8 +147,6 @@ private fun OnboardingScreenContent(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-
-
             ) {
                 Image(
                     painter = painterResource(currentOnboardingPage.imageRes),
@@ -148,6 +154,7 @@ private fun OnboardingScreenContent(
                         .size(256.dp),
                     contentDescription = null,
                 )
+
                 Column(
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -174,7 +181,7 @@ private fun OnboardingScreenContent(
                                 else cameraPermissionState.launchPermissionRequest()
                             }
                         ) {
-                            Text(text = "Надати доступ")
+                            Text(text = stringResource(R.string.onboardingPage2_button_camera))
                         }
                     }
                 }
@@ -256,7 +263,7 @@ private fun OnboardingScreenContent(
             ) {
                 Text(
                     text =
-                if (pagerState.currentPage == 0 || pagerState.currentPage == onboardPagesList.lastIndex)
+                if (pagerState.currentPage == onboardPagesList.lastIndex)
                     stringResource(id = R.string.onboardingPage_button1)
                     else
                     stringResource(R.string.onboardingPage_button2),

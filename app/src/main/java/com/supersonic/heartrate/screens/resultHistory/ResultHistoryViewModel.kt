@@ -27,4 +27,8 @@ class ResultHistoryViewModel @Inject constructor(
         heartRateRepository.deleteAllHeartRates()
     }
 
+    suspend fun deleteItem(heartRate: HeartRate){
+        heartRateRepository.deleteHeartRate(heartRate)
+    }
+
 }

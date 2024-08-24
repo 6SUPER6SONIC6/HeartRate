@@ -1,11 +1,16 @@
 package com.supersonic.heartrate.screens.resultHistory
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,14 +22,20 @@ import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.SwipeToDismissBox
+import androidx.compose.material3.SwipeToDismissBoxState
+import androidx.compose.material3.SwipeToDismissBoxValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,6 +57,7 @@ import com.supersonic.heartrate.navigation.NavigationDestination
 import com.supersonic.heartrate.util.highColor
 import com.supersonic.heartrate.util.lowColor
 import com.supersonic.heartrate.util.midColor
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 object ResultHistoryScreenDestination : NavigationDestination {
@@ -82,14 +94,14 @@ fun ResultHistoryScreen(
                    },
             title = {
                 Text(
-                    text = stringResource(R.string.historyPage_delete_title),
+                    text = stringResource(R.string.historyPage_delete_dialog_title),
                     textAlign = TextAlign.Center,
                     style = typography.titleMedium,
                 )
             },
             text = {
                 Text(
-                    text = "Ви точно хочете очистити всю історію ваших вимірів?",
+                    text = stringResource(R.string.historyPage_delete_dialog_body),
                     textAlign = TextAlign.Center
                 )
             },
@@ -101,7 +113,7 @@ fun ResultHistoryScreen(
                 }
                     },
                 ) {
-                    Text(text = "Так")
+                    Text(text = stringResource(R.string.historyPage_delete_dialog_confirmButton))
                 }
             },
             dismissButton = {
@@ -109,7 +121,7 @@ fun ResultHistoryScreen(
                     onClick = { showDeleteDialog = false },
                     colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
                 ) {
-                    Text(text = "Ні")
+                    Text(text = stringResource(R.string.historyPage_delete_dialog_dismissButton))
                 }
             }
         )
@@ -127,7 +139,7 @@ fun ResultHistoryScreen(
             },
             title = {
                 Text(
-                    text = stringResource(R.string.history_info_title),
+                    text = stringResource(R.string.history_info_dialog_title),
                     textAlign = TextAlign.Center,
                     style = typography.titleMedium,
                 )
@@ -135,7 +147,7 @@ fun ResultHistoryScreen(
             text = {
                 Column {
                     Text(
-                        text = stringResource(R.string.history_info_body),
+                        text = stringResource(R.string.history_info_dialog_body),
                         textAlign = TextAlign.Start
                     )
                     Spacer(modifier = Modifier.height(8.dp))
@@ -152,7 +164,7 @@ fun ResultHistoryScreen(
                             style = typography.bodyMedium
                         )
                         Text(
-                            text = stringResource(R.string.history_info_body_low_accuracy),
+                            text = stringResource(R.string.history_info_dialog_body_low_accuracy),
                             style = typography.bodyMedium
                         )
                     }
@@ -170,7 +182,7 @@ fun ResultHistoryScreen(
                             style = typography.bodyMedium
                         )
                         Text(
-                            text = stringResource(R.string.history_info_body_mid_accuracy),
+                            text = stringResource(R.string.history_info_dialog_body_mid_accuracy),
                             style = typography.bodyMedium
                         )
                     }
@@ -188,7 +200,7 @@ fun ResultHistoryScreen(
                             style = typography.bodyMedium
                         )
                         Text(
-                            text = stringResource(R.string.history_info_body_high_accuracy),
+                            text = stringResource(R.string.history_info_dialog_body_high_accuracy),
                             style = typography.bodyMedium
                         )
                     }
@@ -198,7 +210,7 @@ fun ResultHistoryScreen(
                 TextButton(onClick = { scope.launch {
                     showInfoDialog = false
                 } }) {
-                    Text(text = stringResource(R.string.history_info_button_text1))
+                    Text(text = stringResource(R.string.history_info_dialog_confirmButton))
                 }
             }
         )
@@ -215,7 +227,12 @@ fun ResultHistoryScreen(
     ) {
         ResultHistoryScreenContent(
             modifier = modifier,
-            heartRatesList = heartRatesList
+            heartRatesList = heartRatesList,
+            onItemDelete = {
+                scope.launch {
+                    viewModel.deleteItem(it)
+                }
+            }
         )
     }
 
@@ -258,17 +275,25 @@ private fun ResultHistoryTopBar(
 @Composable
 private fun ResultHistoryScreenContent(
     modifier: Modifier = Modifier,
-    heartRatesList: List<HeartRate>
+    heartRatesList: List<HeartRate>,
+    onItemDelete: (HeartRate) -> Unit
 ) {
     if (heartRatesList.isNotEmpty()){
         LazyColumn(
             modifier = modifier
         ) {
             items(heartRatesList, key = { it.id }) { heartRate ->
-                HistoryCard(
-                    heartRate = heartRate,
-                    modifier = Modifier.padding(8.dp)
-                )
+                SwipeToDeleteContainer(
+                    item = heartRate,
+                    onDelete = {
+                        onItemDelete(heartRate)
+                    }
+                ){
+                    HistoryCard(
+                        heartRate = it,
+                        modifier = Modifier.padding(8.dp)
+                    )
+                }
             }
         }
 
@@ -278,6 +303,113 @@ private fun ResultHistoryScreenContent(
             style = typography.titleLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(top = 32.dp)
+        )
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun <T> SwipeToDeleteContainer(
+    item: T,
+    onDelete: (T) -> Unit,
+    animationDuration: Int = 500,
+    content: @Composable (T) -> Unit
+) {
+    var isRemoved by remember {
+        mutableStateOf(false)
+    }
+    var showDeleteDialog by remember {
+        mutableStateOf(false)
+    }
+    val state = rememberSwipeToDismissBoxState(
+        confirmValueChange = { value ->
+            if (value == SwipeToDismissBoxValue.EndToStart) {
+                showDeleteDialog = true
+                isRemoved
+            } else {
+                false
+            }
+        }
+    )
+
+    if (showDeleteDialog){
+        AlertDialog(
+            onDismissRequest = {
+                showDeleteDialog = false
+                isRemoved = false
+                               },
+            title = {
+                Text(text = "Видалити цей вимір?",
+                    style = typography.titleLarge,
+                    textAlign = TextAlign.Center)
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    isRemoved = true
+                    showDeleteDialog = false
+                }) {
+                    Text(text = "Так")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                    isRemoved = false
+                    showDeleteDialog = false
+                }) {
+                    Text(text = "Ні")
+                }
+            }
+        )
+    }
+
+    LaunchedEffect(key1 = isRemoved) {
+        if(isRemoved) {
+            delay(animationDuration.toLong())
+            onDelete(item)
+        }
+    }
+
+    AnimatedVisibility(
+        visible = !isRemoved,
+        exit = shrinkVertically(
+            animationSpec = tween(durationMillis = animationDuration),
+            shrinkTowards = Alignment.Top
+        ) + fadeOut()
+    ) {
+        SwipeToDismissBox(
+            state = state,
+            backgroundContent = {
+                DeleteBackground(swipeDismissState = state)
+            },
+            enableDismissFromStartToEnd = false,
+            content = { content(item) }
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DeleteBackground(
+    swipeDismissState: SwipeToDismissBoxState
+) {
+    val color = if (swipeDismissState.dismissDirection == SwipeToDismissBoxValue.EndToStart) {
+        Color.Red
+    } else Color.Transparent
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.CenterEnd
+    ) {
+        Icon(
+            modifier = Modifier
+                .background(Color.Red, CircleShape)
+                .padding(8.dp),
+            imageVector = Icons.Outlined.Delete,
+            contentDescription = null,
+            tint = colorScheme.onPrimary
         )
     }
 }

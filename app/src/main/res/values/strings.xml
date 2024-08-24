@@ -5,7 +5,8 @@
     <string name="onboardingPage1_body">Оберіть точність з якою буде зроблене вимірювання пульсу. Чим вища точність тим точніший результат!</string>
 
     <string name="onboardingPage2_title">Початок вимірювання</string>
-    <string name="onboardingPage2_body">Надайте доступ до камери, за допомогою неї буде проводитись вимірювання вашого пульсу. Щільно прикладіть палець до камери, так щоб повністю її закрити. Тримайте палець до закінчення процесу вимірювання пульсу.</string>
+    <string name="onboardingPage2_body">Щільно прикладіть палець до камери, так щоб повністю її закрити. Вимірювання почнеться автоматично.\nТримайте палець до закінчення процесу вимірювання пульсу.\nДля вимірювання пульсу потрібен доступ до камери.</string>
+    <string name="onboardingPage2_button_camera">Натисніть щоб надати доступ до камери</string>
 
     <string name="onboardingPage3_title">Результати</string>
     <string name="onboardingPage3_body">Після закінчення вимірювання ви отримаєте свій результат. Ви можете побачити минулі вимірювання на сторінці "Історія"</string>
@@ -13,9 +14,14 @@
     <string name="onboardingPage_button1">Почати!</string>
     <string name="onboardingPage_button2">Продовжити</string>
 
+    <string name="onboardingScreen_cameraPermission_dialog_title">Доступ до камери відхилено</string>
+    <string name="onboardingScreen_cameraPermission_dialog_body">Ви не надали доступ до камери. Будь ласка зробіть це в налаштуваннях.</string>
+    <string name="onboardingScreen_cameraPermission_dialog_confirmButton">В налаштування</string>
+    <string name="onboardingScreen_cameraPermission_dialog_dismissButton">Відхилити</string>
+
     <string name="resultPage_button1">Готово</string>
 
-    <string name="historyPage_delete_title">Очистити історію?</string>
+    <string name="historyPage_delete_dialog_title">Очистити історію?</string>
 
     <string name="homePage_title1">Виконайте своє перше вимірювання!</string>
 
@@ -51,13 +57,16 @@
     <string name="measurementAccuracy_mid">Середня</string>
     <string name="measurementAccuracy_high">Висока</string>
 
-    <string name="history_info_title">Що означає колір розділяючої полоси на картці результату?</string>
-    <string name="history_info_body">Точність з якою було зроблене вимірювання:</string>
-    <string name="history_info_body_low_accuracy">Низька точнісь</string>
-    <string name="history_info_body_mid_accuracy">Cередня точнісь</string>
-    <string name="history_info_body_high_accuracy">Висока точнісь</string>
-    <string name="history_info_button_text1">Зрозуміло</string>
+    <string name="history_info_dialog_title">Що означає колір розділяючої полоси на картці результату?</string>
+    <string name="history_info_dialog_body">Точність з якою було зроблене вимірювання:</string>
+    <string name="history_info_dialog_body_low_accuracy">Низька точнісь</string>
+    <string name="history_info_dialog_body_mid_accuracy">Cередня точнісь</string>
+    <string name="history_info_dialog_body_high_accuracy">Висока точнісь</string>
+    <string name="history_info_dialog_confirmButton">Зрозуміло</string>
     <string name="resultCard_measurementAccuracy_text">"Точність вимірювання – "</string>
+    <string name="historyPage_delete_dialog_body">Ви впевнені що хочете очистити всю історію ваших вимірів?</string>
+    <string name="historyPage_delete_dialog_confirmButton">Так</string>
+    <string name="historyPage_delete_dialog_dismissButton">Ні</string>
 
 
 </resources>

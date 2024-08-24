@@ -1,14 +1,22 @@
 package com.supersonic.heartrate.screens.measurement
 
 import android.util.Log
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.material3.MaterialTheme.typography
@@ -23,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
@@ -102,7 +111,6 @@ fun MeasurementContent(
     Box(
         modifier = modifier
     ) {
-
         // Camera
         Column(
             modifier = Modifier
@@ -180,6 +188,15 @@ fun MeasurementContent(
         }
 
         // Progress Bar / Measurement Accuracy Choosing
+
+        val infiniteTransition = rememberInfiniteTransition(label = "InfiniteTransition")
+        val progressBarAlpha by infiniteTransition.animateFloat(
+            initialValue = 0F,
+            targetValue = 1F,
+            animationSpec = infiniteRepeatable(tween(1000), RepeatMode.Reverse),
+            label = "alpha"
+        )
+
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -189,27 +206,43 @@ fun MeasurementContent(
         ){
             if (isFingerDetected) {
                 measurementAccuracyMap[selectedItem]?.let {
-                    AnimatedLinearProgressIndicator(
-                        modifier = Modifier
-                            .fillMaxWidth(.8f),
-                        animationDuration = it,
-                        strokeCap = StrokeCap.Round,
-                        trackColor = colorScheme.secondary,
-                        onLoadFinish = { onMeasurementFinish(
-                            HeartRate(
-                                bpm = currentHeartRate,
-                                time = getCurrentTime(),
-                                date = getCurrentDate(),
-                                measurementAccuracy = when(selectedItem){
-                                    R.string.measurementAccuracy_low_sec -> R.string.measurementAccuracy_low
-                                    R.string.measurementAccuracy_mid_sec -> R.string.measurementAccuracy_mid
-                                    R.string.measurementAccuracy_high_sec -> R.string.measurementAccuracy_high
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ){
 
-                                    else -> R.string.measurementAccuracy_mid
-                                },
-                            )
-                        ) }
-                    )
+                        Box(
+                            modifier = Modifier
+                                .alpha(progressBarAlpha)
+                                .fillMaxWidth(.82F)
+                                .height(28.dp)
+                                .background(color = colorScheme.primary, CircleShape)
+                        )
+
+                        AnimatedLinearProgressIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth(.8f),
+                            animationDuration = it,
+                            strokeCap = StrokeCap.Round,
+                            trackColor = colorScheme.secondary,
+                            onLoadFinish = {
+                                onMeasurementFinish(
+                                    HeartRate(
+                                        bpm = currentHeartRate,
+                                        time = getCurrentTime(),
+                                        date = getCurrentDate(),
+                                        measurementAccuracy = when (selectedItem) {
+                                            R.string.measurementAccuracy_low_sec -> R.string.measurementAccuracy_low
+                                            R.string.measurementAccuracy_mid_sec -> R.string.measurementAccuracy_mid
+                                            R.string.measurementAccuracy_high_sec -> R.string.measurementAccuracy_high
+
+                                            else -> R.string.measurementAccuracy_mid
+                                        },
+                                    )
+                                )
+                            }
+                        )
+                    }
                 }
             } else {
                 Column(
@@ -223,6 +256,7 @@ fun MeasurementContent(
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
                     DropdownList(
+                        modifier = Modifier.width(320.dp),
                         itemList = measurementAccuracyKeysList,
                         selectedItemResource = selectedItem,
                         onItemClick = { selectedItem = it }

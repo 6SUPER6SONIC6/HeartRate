@@ -12,6 +12,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.supersonic.heartrate.screens.history.HistoryScreen
+import com.supersonic.heartrate.screens.history.HistoryScreenDestination
+import com.supersonic.heartrate.screens.history.HistoryViewModel
 import com.supersonic.heartrate.screens.homepage.HomepageScreen
 import com.supersonic.heartrate.screens.homepage.HomepageScreenDestination
 import com.supersonic.heartrate.screens.loading.LoadingScreen
@@ -24,9 +27,6 @@ import com.supersonic.heartrate.screens.onboarding.OnboardingScreenDestination
 import com.supersonic.heartrate.screens.result.ResultScreen
 import com.supersonic.heartrate.screens.result.ResultScreenDestination
 import com.supersonic.heartrate.screens.result.ResultScreenViewModel
-import com.supersonic.heartrate.screens.resultHistory.ResultHistoryScreen
-import com.supersonic.heartrate.screens.resultHistory.ResultHistoryScreenDestination
-import com.supersonic.heartrate.screens.resultHistory.ResultHistoryViewModel
 
 @Composable
 fun RootAppNavigation(
@@ -75,7 +75,7 @@ fun RootAppNavigation(
                     else navController.navigate(MeasurementScreenDestination.route)
                                          },
                 onNavigateToResultHistory = {
-                    navController.navigate(ResultHistoryScreenDestination.route)
+                    navController.navigate(HistoryScreenDestination.route)
                 }
             )
         }
@@ -86,7 +86,7 @@ fun RootAppNavigation(
             MeasurementScreen(
                 viewModel = viewModel,
                 onNavigateToResultHistory = {
-                    navController.navigate(ResultHistoryScreenDestination.route)
+                    navController.navigate(HistoryScreenDestination.route)
                 },
                 onNavigationToResult = {
                     navController.navigate("${ResultScreenDestination.route}/${it}")
@@ -110,15 +110,15 @@ fun RootAppNavigation(
                     }
                 },
                 onNavigationToHistory = {
-                    navController.navigate(ResultHistoryScreenDestination.route)
+                    navController.navigate(HistoryScreenDestination.route)
                 }
             )
         }
 
         //Result History Screen
-        composable(route = ResultHistoryScreenDestination.route) {
-            val viewModel = hiltViewModel<ResultHistoryViewModel>()
-            ResultHistoryScreen(
+        composable(route = HistoryScreenDestination.route) {
+            val viewModel = hiltViewModel<HistoryViewModel>()
+            HistoryScreen(
                 modifier = Modifier.fillMaxSize(),
                 viewModel = viewModel,
                 onBackClick = {

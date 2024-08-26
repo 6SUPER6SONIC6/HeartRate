@@ -72,7 +72,7 @@ fun ResultTopBar(
         title = stringResource(id = R.string.topAppBar_title_result),
         actions = {
             Text(
-                text = stringResource(R.string.topAppBar_title_history),
+                text = stringResource(R.string.topAppBar_title_result),
                 style = typography.titleSmall,
                 color = colorScheme.onPrimary
             )

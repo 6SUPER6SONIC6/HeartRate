@@ -139,8 +139,8 @@ private fun HomepageScreenContent(
             Box(
                 modifier = Modifier
                     .alpha(if(isFirstMeasurement) animatedAlpha else 0F)
-                    .background(color = colorScheme.primary, CircleShape)
-                    .size(110.dp)
+                    .background(color = colorScheme.secondary, CircleShape)
+                    .size(112.dp)
             )
 
             IconButton(

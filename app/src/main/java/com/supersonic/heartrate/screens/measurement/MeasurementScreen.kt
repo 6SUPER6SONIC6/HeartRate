@@ -1,5 +1,6 @@
 package com.supersonic.heartrate.screens.measurement
 
+import android.Manifest
 import android.util.Log
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -38,6 +39,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberPermissionState
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.components.AnimatedLinearProgressIndicator
 import com.supersonic.heartrate.components.DropdownList
@@ -45,15 +48,16 @@ import com.supersonic.heartrate.components.ScreenTemplate
 import com.supersonic.heartrate.models.HeartRate
 import com.supersonic.heartrate.navigation.NavigationDestination
 import com.supersonic.heartrate.screens.homepage.HomeTopBar
+import com.supersonic.heartrate.screens.onboarding.CameraPermissionNotGrantedDialog
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 object MeasurementScreenDestination : NavigationDestination {
     override val route = "measurement"
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun MeasurementScreen(
     modifier: Modifier = Modifier,
@@ -65,6 +69,15 @@ fun MeasurementScreen(
 
     val scope = rememberCoroutineScope()
     val id = viewModel.insertedHeartRateId
+
+    val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
+
+    if (!cameraPermissionState.hasPermission){
+        CameraPermissionNotGrantedDialog(
+            onDismiss = onNavigateBack,
+            clickOutsideDismiss = false
+        )
+    }
 
     ScreenTemplate(
         topBar = {
@@ -178,7 +191,7 @@ fun MeasurementContent(
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = stringResource(R.string.bpm).uppercase(Locale.ROOT),
+                    text = stringResource(R.string.bpm),
                     style = typography.displaySmall,
                     color = colorScheme.onPrimary,
                     textAlign = TextAlign.Center
@@ -188,12 +201,11 @@ fun MeasurementContent(
         }
 
         // Progress Bar / Measurement Accuracy Choosing
-
         val infiniteTransition = rememberInfiniteTransition(label = "InfiniteTransition")
         val progressBarAlpha by infiniteTransition.animateFloat(
             initialValue = 0F,
             targetValue = 1F,
-            animationSpec = infiniteRepeatable(tween(1000), RepeatMode.Reverse),
+            animationSpec = infiniteRepeatable(tween(1_000), RepeatMode.Reverse),
             label = "alpha"
         )
 

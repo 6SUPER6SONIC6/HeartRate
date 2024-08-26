@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Heart Rate</string>
+    <string name="app_name" translatable="false">Heart Rate</string>
 
     <string name="onboardingPage1_title">Точність вимірювання</string>
     <string name="onboardingPage1_body">Оберіть точність з якою буде зроблене вимірювання пульсу. Чим вища точність тим точніший результат!</string>
@@ -21,8 +21,6 @@
 
     <string name="resultPage_button1">Готово</string>
 
-    <string name="historyPage_delete_dialog_title">Очистити історію?</string>
-
     <string name="homePage_title1">Виконайте своє перше вимірювання!</string>
 
     <string name="topAppBar_title_history">Історія</string>
@@ -41,6 +39,8 @@
     <string name="resultCard_delayed">Уповільнений</string>
     <string name="resultCard_standard">Звичайний</string>
     <string name="resultCard_frequent">Прискорений</string>
+
+    <string name="resultCard_measurementAccuracy_text">"Точність вимірювання – "</string>
 
     <string name="resultCard_delayed_value"> &lt;60 BPM</string>
     <string name="resultCard_standard_value">60–100 BPM</string>
@@ -63,10 +63,14 @@
     <string name="history_info_dialog_body_mid_accuracy">Cередня точнісь</string>
     <string name="history_info_dialog_body_high_accuracy">Висока точнісь</string>
     <string name="history_info_dialog_confirmButton">Зрозуміло</string>
-    <string name="resultCard_measurementAccuracy_text">"Точність вимірювання – "</string>
-    <string name="historyPage_delete_dialog_body">Ви впевнені що хочете очистити всю історію ваших вимірів?</string>
-    <string name="historyPage_delete_dialog_confirmButton">Так</string>
-    <string name="historyPage_delete_dialog_dismissButton">Ні</string>
+
+    <string name="history_clearHistory_dialog_title">Очистити історію?</string>
+    <string name="history_clearHistory_dialog_body">Ви впевнені що хочете очистити всю історію ваших вимірів?</string>
+    <string name="history_clearHistory_dialog_confirmButton">Так</string>
+    <string name="history_clearHistory_dialog_dismissButton">Ні</string>
+
+    <string name="history_deleteMeasurement_dialog_title">Видалити вимір?</string>
+    <string name="history_deleteMeasurement_dialog_body">Ви впевнені що хочете видалити цей вимір?</string>
 
 
 </resources>

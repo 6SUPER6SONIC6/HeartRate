@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -85,44 +84,12 @@ private fun OnboardingScreenContent(
     onFinish: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
-    var shouldShowRationale by remember { mutableStateOf(false) }
+    var showCameraPermissionNotGrantedDialog by remember { mutableStateOf(false) }
 
-    if (shouldShowRationale){
-        AlertDialog(
-            onDismissRequest = { shouldShowRationale = false },
-            title = {
-                Text(
-                    text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_title),
-                    textAlign = TextAlign.Center,
-                    style = typography.titleMedium
-                )
-            },
-            text = {
-                Text(
-                    text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_body),
-                    textAlign = TextAlign.Center,
-                    style = typography.bodyMedium
-                )
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                        data = Uri.fromParts("package", context.packageName, null)
-                    })
-                    shouldShowRationale = false
-                }) {
-                    Text(text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_confirmButton))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray),
-                    onClick = { shouldShowRationale = false }) {
-                    Text(text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_dismissButton))
-                }
-            }
+    if (showCameraPermissionNotGrantedDialog){
+        CameraPermissionNotGrantedDialog(
+            onDismiss = {showCameraPermissionNotGrantedDialog = false}
         )
     }
     
@@ -177,7 +144,7 @@ private fun OnboardingScreenContent(
                             modifier = Modifier.padding(top = 16.dp),
                             enabled = !cameraPermissionState.hasPermission,
                             onClick = {
-                                if (cameraPermissionState.permissionRequested) shouldShowRationale = true
+                                if (cameraPermissionState.permissionRequested) showCameraPermissionNotGrantedDialog = true
                                 else cameraPermissionState.launchPermissionRequest()
                             }
                         ) {
@@ -212,33 +179,22 @@ private fun OnboardingScreenContent(
                         label = "OnboardingPages"
                     )
 
-                    if (pagerState.currentPage == it){
+
                         Box(
                             modifier = Modifier
                                 .padding(4.dp)
                                 .size(width = width, height = 14.dp)
-                                .background(colorScheme.primary, shape = RoundedCornerShape(8.dp))
+                                .background(
+                                    if (pagerState.currentPage == it) colorScheme.primary
+                                    else colorScheme.secondary,
+                                    shape = RoundedCornerShape(8.dp)
+                                )
                                 .clickable {
                                     scope.launch {
                                         pagerState.animateScrollToPage(it)
                                     }
                                 }
                         )
-                    } else {
-                        Box(
-                            modifier = Modifier
-                                .padding(4.dp)
-                                .size(width = width, height = 14.dp)
-                                .background(Color.Gray, shape = CircleShape)
-                                .clickable {
-                                    scope.launch {
-                                        pagerState.animateScrollToPage(it)
-                                    }
-                                }
-                        )
-                    }
-
-
                 }
             }
             
@@ -272,6 +228,51 @@ private fun OnboardingScreenContent(
             }
         }
     }
+}
+
+@Composable
+fun CameraPermissionNotGrantedDialog(
+    onDismiss: () -> Unit = {},
+    clickOutsideDismiss: Boolean = true
+) {
+
+    val context = LocalContext.current
+
+    AlertDialog(
+        onDismissRequest = { if(clickOutsideDismiss) onDismiss.invoke() },
+        title = {
+            Text(
+                text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_title),
+                textAlign = TextAlign.Center,
+                style = typography.titleMedium
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_body),
+                textAlign = TextAlign.Center,
+                style = typography.bodyMedium
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                context.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                })
+                onDismiss.invoke()
+            }) {
+                Text(text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_confirmButton))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray),
+                onClick = onDismiss
+            ) {
+                Text(text = stringResource(R.string.onboardingScreen_cameraPermission_dialog_dismissButton))
+            }
+        }
+    )
 }
 
 @Preview

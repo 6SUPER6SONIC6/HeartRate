@@ -175,7 +175,6 @@ fun MeasurementContent(
         ) {
             Image(
                 painter = painterResource(id = R.drawable.heart2),
-                modifier = Modifier.size(260.dp),
                 contentDescription = null
             )
             Column(
@@ -262,7 +261,7 @@ fun MeasurementContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ){
                     Text(
-                        text = stringResource(R.string.ChooseMeasurementAccuracy),
+                        text = stringResource(R.string.measurement_chooseMeasurementAccuracy),
                         style = typography.bodyLarge,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(bottom = 4.dp)

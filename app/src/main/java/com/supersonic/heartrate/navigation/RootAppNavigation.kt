@@ -32,7 +32,7 @@ import com.supersonic.heartrate.screens.result.ResultScreenViewModel
 fun RootAppNavigation(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = LoadingScreenDestination.route
+    startDestination: String = HomepageScreenDestination.route
     ) {
 
 

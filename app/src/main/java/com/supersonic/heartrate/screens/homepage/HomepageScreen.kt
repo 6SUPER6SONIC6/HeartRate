@@ -124,8 +124,7 @@ private fun HomepageScreenContent(
         Image(
             painter = painterResource(R.drawable.heart),
             modifier = Modifier
-                .align(Alignment.Center)
-                .size(260.dp),
+                .align(Alignment.Center),
             contentDescription = null
         )
 

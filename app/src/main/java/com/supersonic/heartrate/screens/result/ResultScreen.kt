@@ -65,14 +65,12 @@ fun ResultScreen(
 
 @Composable
 fun ResultTopBar(
-    modifier: Modifier = Modifier,
     onNavigationToResultsHistory: () -> Unit
 ) {
     TopBar(
-        title = stringResource(id = R.string.topAppBar_title_result),
         actions = {
             Text(
-                text = stringResource(R.string.topAppBar_title_result),
+                text = stringResource(R.string.topAppBar_title_history),
                 style = typography.titleSmall,
                 color = colorScheme.onPrimary
             )

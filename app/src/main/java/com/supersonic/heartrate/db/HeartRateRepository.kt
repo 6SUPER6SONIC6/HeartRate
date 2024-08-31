@@ -12,5 +12,7 @@ class HeartRateRepository @Inject constructor(private val heartRateDao: HeartRat
 
     suspend fun insertHeartRate(heartRate: HeartRate): Long = heartRateDao.insertHeartRate(heartRate)
 
+    suspend fun deleteHeartRate(heartRate: HeartRate) = heartRateDao.deleteHeartRate(heartRate)
+
     suspend fun deleteAllHeartRates() = heartRateDao.deleteAllHeartRates()
 }

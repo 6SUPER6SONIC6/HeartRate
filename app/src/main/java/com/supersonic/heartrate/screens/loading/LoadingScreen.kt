@@ -20,7 +20,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.supersonic.heartrate.R
 import com.supersonic.heartrate.components.AnimatedLinearProgressIndicator
-import com.supersonic.heartrate.components.BackgroundedSurface
 import com.supersonic.heartrate.navigation.NavigationDestination
 import com.supersonic.heartrate.ui.theme.HeartRateTheme
 
@@ -53,25 +52,20 @@ fun LoadingScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        BackgroundedSurface(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
                 .weight(5F),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier,
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.heart),
-                    contentDescription = null
-                )
-                Text(
-                    text = stringResource(R.string.app_name),
-                    style = typography.displayLarge.copy(fontWeight = FontWeight.Bold)
-                )
-            }
+            Image(
+                painter = painterResource(R.drawable.heart),
+                contentDescription = null
+            )
+            Text(
+                text = stringResource(R.string.app_name),
+                style = typography.displayLarge.copy(fontWeight = FontWeight.Bold)
+            )
         }
         AnimatedLinearProgressIndicator(
             animationDuration = 2_000,

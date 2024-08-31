@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.supersonic.heartrate.R
 import com.supersonic.heartrate.db.HeartRateRepository
 import com.supersonic.heartrate.models.HeartRate
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +23,7 @@ class ResultScreenViewModel @Inject constructor(
 
     private val hearRateId: Int = checkNotNull(savedStateHandle[ResultScreenDestination.heartRateIdArg])
 
-    var heartRate by mutableStateOf(HeartRate(0,0,"",""))
+    var heartRate by mutableStateOf(HeartRate(0,0,"","", R.string.measurementAccuracy_mid))
         private set
 
     init {

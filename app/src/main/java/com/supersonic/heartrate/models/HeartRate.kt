@@ -9,5 +9,6 @@ data class HeartRate(
     val id: Int = 0,
     val bpm: Int,
     val time: String,
-    val date: String
+    val date: String,
+    val measurementAccuracy: Int
 )

@@ -1,9 +1,14 @@
 package com.supersonic.heartrate.ui.theme
 
+import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 
 
 private val LightColorScheme = lightColorScheme(
@@ -12,7 +17,8 @@ private val LightColorScheme = lightColorScheme(
     secondary = secondary,
     primaryContainer = primaryContainer,
     onPrimaryContainer = onPrimaryContainer,
-    secondaryContainer = secondaryContainer
+    secondaryContainer = secondaryContainer,
+    background = background
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -33,6 +39,12 @@ fun HeartRateTheme(
     content: @Composable () -> Unit
 ) {
     val colorScheme = LightColorScheme
+    val context = LocalContext.current as ComponentActivity
+
+    context.enableEdgeToEdge(
+        statusBarStyle = SystemBarStyle.light(primary.toArgb(), primary.toArgb()),
+        navigationBarStyle = SystemBarStyle.light(background.toArgb(), background.toArgb())
+    )
 
     MaterialTheme(
         colorScheme = colorScheme,

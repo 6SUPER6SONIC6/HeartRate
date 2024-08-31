@@ -1,4 +1,4 @@
-package com.supersonic.heartrate.screens.resultHistory
+package com.supersonic.heartrate.screens.history
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class ResultHistoryViewModel @Inject constructor(
+class HistoryViewModel @Inject constructor(
     private val heartRateRepository: HeartRateRepository
 ): ViewModel() {
 
@@ -25,6 +25,10 @@ class ResultHistoryViewModel @Inject constructor(
 
     suspend fun clearHistory(){
         heartRateRepository.deleteAllHeartRates()
+    }
+
+    suspend fun deleteItem(heartRate: HeartRate){
+        heartRateRepository.deleteHeartRate(heartRate)
     }
 
 }

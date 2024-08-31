@@ -1,44 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Heart Rate</string>
 
-    <string name="onboardingPage1_title">Ваш трекер тиску</string>
-    <string name="onboardingPage1_body">Зазначайте, відстежуйте та аналізуйте свої показники артеріального тиску.</string>
+    <string name="app_name" translatable="false">Heart Rate</string>
+    <string name="homePage_title1">Make your first measurement!</string>
+    <string name="topAppBar_title_history">History</string>
+    <string name="topAppBar_title_result">Result</string>
+    <string name="bpm" translatable="false">BPM</string>
 
-    <string name="onboardingPage2_title">Персоналізовані поради</string>
-    <string name="onboardingPage2_body">Програма надає дієві поради, які допоможуть вам підтримувати оптимальний рівень артеріального тиску та зменшити фактори ризику серцево-судинних захворювань.</string>
+//Onboarding
+    <string name="onboardingPage1_title">Measurement accuracy</string>
+    <string name="onboardingPage1_body">Select the accuracy with which the heart rate measurement will be made. The higher the accuracy, the more accurate the result!</string>
+    <string name="onboardingPage2_title">Start of measurement</string>
+    <string name="onboardingPage2_body">Press your finger firmly against your phone camera until it is completely closed. The measurement will start automatically. Hold your finger until the heart rate measurement is complete.\nAccess to the camera is required to measure heart rate.</string>
+    <string name="onboardingPage2_button_camera">Tap to provide access to the camera</string>
+    <string name="onboardingPage3_title">Results</string>
+    <string name="onboardingPage3_body">After the measurement is complete, you will receive your result. You can see past measurements on the History page</string>
+    <string name="onboardingPage_button1">Start!</string>
+    <string name="onboardingPage_button2">Continue</string>
+    <string name="onboardingScreen_cameraPermission_dialog_title">Camera access denied</string>
+    <string name="onboardingScreen_cameraPermission_dialog_body">You have not granted access to the camera. Please do it in the settings.</string>
+    <string name="onboardingScreen_cameraPermission_dialog_confirmButton">Go to settings</string>
+    <string name="onboardingScreen_cameraPermission_dialog_dismissButton">Dismiss</string>
 
-    <string name="onboardingPage3_title">Нагадування</string>
-    <string name="onboardingPage3_body">Не відставайте від графіка контролю артеріального тиску та прийому ліків за допомогою спеціальних нагадувань.</string>
+    //Result
+    <string name="resultPage_button1">Done</string>
+    <string name="resultCard_title">Your Result</string>
+    <string name="resultCard_delayed">Slowed</string>
+    <string name="resultCard_standard">Regular</string>
+    <string name="resultCard_frequent">Accelerated</string>
+    <string name="resultCard_measurementAccuracy_text">"Measurement accuracy – "</string>
+    <string name="resultCard_delayed_value" translatable="false"> &lt;60 BPM</string>
+    <string name="resultCard_standard_value" translatable="false">60–100 BPM</string>
+    <string name="resultCard_frequent_value" translatable="false">>100 BPM</string>
 
-    <string name="onboardingPage_button1">Почати!</string>
-    <string name="onboardingPage_button2">Продовжити</string>
+    //Measurement
+    <string name="measurement_fingerNotDetected_text1">Finger not detected</string>
+    <string name="measurement_fingerNotDetected_text2">Press your finger firmly against the camera</string>
+    <string name="measurement_fingerDetected_text1">Measurement is in progress.</string>
+    <string name="measurement_fingerDetected_text2">Determining your pulse. Hold this!</string>
+    <string name="measurement_chooseMeasurementAccuracy">Select the measurement accuracy:</string>
 
-    <string name="resultPage_button1">Готово</string>
+    <string name="measurementAccuracy_low_sec">Low - 10 sec</string>
+    <string name="measurementAccuracy_mid_sec">Medium - 20 sec</string>
+    <string name="measurementAccuracy_high_sec">High - 30 sec</string>
+    <string name="measurementAccuracy_low">Low</string>
+    <string name="measurementAccuracy_mid">Medium</string>
+    <string name="measurementAccuracy_high">High</string>
 
-    <string name="historyPage_button1">Очистити історію</string>
+    //History
 
-    <string name="homePage_title1">Виконайте своє перше вимірювання!</string>
-
-    <string name="topAppBar_title_history">Історія</string>
-    <string name="topAppBar_title_result">Результат</string>
-
-    <string name="measurement_fingerNotDetected_text1">Палець не виявлено</string>
-    <string name="measurement_fingerNotDetected_text2">Щільно прикладіть палець до камери</string>
-
-    <string name="measurement_fingerDetected_text1">Йде Вимірювання.</string>
-    <string name="measurement_fingerDetected_text2">Визначаємо ваш пульс. Утримуйте!</string>
-
-    <string name="bpm">bpm</string>
-
-    <string name="resultCard_title">Ваш Результат</string>
-
-    <string name="resultCard_delayed">Уповільнений</string>
-    <string name="resultCard_standard">Звичайно</string>
-    <string name="resultCard_frequent">Прискорений</string>
-    <string name="resultCard_delayed_value"> &lt;60 BPM</string>
-    <string name="resultCard_standard_value">60–100 BPM</string>
-    <string name="resultCard_frequent_value">>100 BPM</string>
-    <string name="history_empty_text">Ви не зробили жодного вимірювання</string>
-
+    <string name="history_empty_text">You have not taken any measurements</string>
+    <string name="history_info_dialog_title">What does the color of the dividing bar on the result card mean?</string>
+    <string name="history_info_dialog_body">The accuracy with which the measurement was made:</string>
+    <string name="history_info_dialog_body_low_accuracy">Low accuracy</string>
+    <string name="history_info_dialog_body_mid_accuracy">Medium accuracy</string>
+    <string name="history_info_dialog_body_high_accuracy">High accuracy</string>
+    <string name="history_info_dialog_confirmButton">Understood</string>
+    <string name="history_clearHistory_dialog_title">Clear your history?</string>
+    <string name="history_clearHistory_dialog_body">Are you sure you want to clear your entire measurement history?</string>
+    <string name="history_clearHistory_dialog_confirmButton">Yes</string>
+    <string name="history_clearHistory_dialog_dismissButton">No</string>
+    <string name="history_deleteMeasurement_dialog_title">Delete the measurement?</string>
+    <string name="history_deleteMeasurement_dialog_body">Are you sure you want to delete this measurement?</string>
 
 </resources>

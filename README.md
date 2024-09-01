@@ -2,9 +2,9 @@
 
 Heart Rate is an Android app that measures your heart rate using your phone’s camera. Whether you’re tracking your fitness, monitoring your health, or just curious about your pulse, this app provides instant results with a user-friendly interface.
 
-<img src="https://github.com/user-attachments/assets/26fd37bc-3177-482f-80c2-0d114735dc2d" width="320" height="640">
-<img src="https://github.com/user-attachments/assets/d7628a8e-aa7b-4dc2-be3f-f8a1ad60f0f7" width="320" height="640">
-<img src="https://github.com/user-attachments/assets/ddac978c-82bb-4bc6-90bc-c184b8a5cbed" width="320" height="640">
+<img src="https://github.com/user-attachments/assets/26fd37bc-3177-482f-80c2-0d114735dc2d" width="280" height="560">
+<img src="https://github.com/user-attachments/assets/d7628a8e-aa7b-4dc2-be3f-f8a1ad60f0f7" width="280" height="560">
+<img src="https://github.com/user-attachments/assets/ddac978c-82bb-4bc6-90bc-c184b8a5cbed" width="280" height="560">
 
 ## DISCLAIMER ⚠️ 
 
